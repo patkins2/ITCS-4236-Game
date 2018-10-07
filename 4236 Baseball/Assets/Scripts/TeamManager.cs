@@ -19,6 +19,8 @@ public class TeamManager : MonoBehaviour {
 
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private TeamManager otherTeam;
+    [SerializeField] private GameObject baseballBat;
+
     private Transform fieldPositions;
     private int maxPlayers = 9;
 	[HideInInspector] public enum TeamRole {fielding, batting};
@@ -54,10 +56,15 @@ public class TeamManager : MonoBehaviour {
             //Loop through field positions until empty position is found
             for (int c = 0; c < fieldPositions.childCount; c++) {
                 FieldPositions position = fieldPositions.GetChild(c).GetComponent<FieldPositions>();
+                if (position.name.Equals("Batting")){
+                    position.isBatter = true;
+                    Instantiate(baseballBat);
+                }
 
                 //If empty position is found, move player to position location and break;
                 if (!position.positionOccupied) {
                     print("Adding player to position: " + position.gameObject.name);
+                    
                     position.positionOccupied = true;
                     newPlayer.transform.position = position.transform.position;
                     break;
