@@ -56,15 +56,41 @@ public class TeamManager : MonoBehaviour {
             //Loop through field positions until empty position is found
             for (int c = 0; c < fieldPositions.childCount; c++) {
                 FieldPositions position = fieldPositions.GetChild(c).GetComponent<FieldPositions>();
-                if (position.name.Equals("Batting")){
-                    position.isBatter = true;
-                    Instantiate(baseballBat);
-                }
+                
 
+                
                 //If empty position is found, move player to position location and break;
                 if (!position.positionOccupied) {
                     print("Adding player to position: " + position.gameObject.name);
-                    
+                    //If the posisition is a batter, create a bat object and attach it to the player's hand
+                    if (position.name.Equals("Batting"))
+                    {
+                        newPlayer.name = "Batting";
+
+                        GameObject hand = null;
+
+                        //Gets all of the children objects of the player
+                        Transform[] children = GetComponentsInChildren<Transform>();
+                        foreach (Transform child in children)
+                        {
+                            if (child.name.Equals("mixamorig:RightHand"))
+                            {
+                                //Gets the right hand object
+                                hand = child.gameObject;
+                            }
+                        }
+                        position.isBatter = true;
+
+                        //Creates a bat and places in the right hand of the player
+                        GameObject bat = Instantiate(baseballBat, hand.transform.position, hand.transform.rotation);
+                        //Attaches the bat so it will move with the player's hand
+                        bat.transform.parent = hand.transform.transform.parent;
+                    }
+
+                    if (position.name.Equals("Pitcher"))
+                    {
+                        newPlayer.name = position.name;
+                    }
                     position.positionOccupied = true;
                     newPlayer.transform.position = position.transform.position;
                     break;
