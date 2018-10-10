@@ -21,9 +21,18 @@ public class PlayerController : MonoBehaviour {
         runSpeed = Random.Range(minSpeed, maxSpeed);
         swingPower = Random.Range(minPower, maxPower);
         currentPlayer = this.gameObject;
-
         hand = null;
         animator = GetComponent<Animator>();
+
+        if (currentPlayer.name.Equals("Batting"))
+        {
+            animator.Play("Baseball Idle");
+        }
+        else
+        {
+            animator.Play("Idle (1)");
+        }
+        
         //Gets all of the children objects of the player
         Transform[] children = GetComponentsInChildren<Transform>();
         foreach (Transform child in children)
@@ -43,11 +52,13 @@ public class PlayerController : MonoBehaviour {
         {
             if (currentPlayer.name.Equals("Pitcher"))
             {
+                Debug.Log("Pitching");
                 animator.Play("Baseball Pitching");
             }
             if (currentPlayer.name.Equals("Batting"))
             {
-                animator.Play("Basball Hit");
+                Debug.Log("Batter");
+                animator.Play("Baseball Hit");
             }
         }
         

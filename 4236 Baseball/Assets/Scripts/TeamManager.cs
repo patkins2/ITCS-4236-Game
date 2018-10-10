@@ -18,6 +18,8 @@ using UnityEngine;
 public class TeamManager : MonoBehaviour {
 
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject batterPrefab;
+    [SerializeField] private GameObject pitcherPrefab;
     [SerializeField] private TeamManager otherTeam;
     [SerializeField] private GameObject baseballBat;
 
@@ -47,6 +49,8 @@ public class TeamManager : MonoBehaviour {
         else
             fieldPositions = GameObject.Find("Fielding Positions").transform;
 
+
+
 		for (int i = 0; i < maxPlayers; i++) {
 
             //Instantiate player prefab
@@ -65,6 +69,7 @@ public class TeamManager : MonoBehaviour {
                     //If the posisition is a batter, create a bat object and attach it to the player's hand
                     if (position.name.Equals("Batting"))
                     {
+                        newPlayer = Instantiate(batterPrefab, Vector3.zero, Quaternion.identity, this.transform);
                         newPlayer.name = "Batting";
 
                         GameObject hand = null;
@@ -82,9 +87,8 @@ public class TeamManager : MonoBehaviour {
                         position.isBatter = true;
 
                         //Creates a bat and places in the right hand of the player
-                        GameObject bat = Instantiate(baseballBat, hand.transform.position, hand.transform.rotation);
+                        
                         //Attaches the bat so it will move with the player's hand
-                        bat.transform.parent = hand.transform.transform.parent;
                     }
 
                     if (position.name.Equals("Pitcher"))
