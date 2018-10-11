@@ -71,7 +71,7 @@ public class TeamManager : MonoBehaviour {
                     {
                         newPlayer = Instantiate(batterPrefab, Vector3.zero, Quaternion.identity, this.transform);
                         newPlayer.name = "Batting";
-
+                        /*
                         GameObject hand = null;
 
                         //Gets all of the children objects of the player
@@ -89,11 +89,14 @@ public class TeamManager : MonoBehaviour {
                         //Creates a bat and places in the right hand of the player
                         
                         //Attaches the bat so it will move with the player's hand
+                        */
                     }
 
                     if (position.name.Equals("Pitcher"))
                     {
+                        newPlayer = Instantiate(pitcherPrefab, Vector3.zero, Quaternion.identity, this.transform);
                         newPlayer.name = position.name;
+                        
                     }
                     position.positionOccupied = true;
                     newPlayer.transform.position = position.transform.position;

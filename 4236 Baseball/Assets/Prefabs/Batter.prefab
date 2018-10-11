@@ -2386,7 +2386,7 @@ Animator:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1371912851445118}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: ae75572b8949c114a8b75665e46d54a5, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 9c71d10ab52472c408c7925682945039, type: 3}
   m_Controller: {fileID: 9100000, guid: 0b024b2cbbe8c2d4296992970a1b9d4a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -2411,8 +2411,6 @@ MonoBehaviour:
   maxSpeed: 0
   minPower: 0
   maxPower: 0
-  bat: {fileID: 0}
-  batPrefab: {fileID: 0}
   runSpeed: 0
   swingPower: 0
 --- !u!136 &136076547993259674

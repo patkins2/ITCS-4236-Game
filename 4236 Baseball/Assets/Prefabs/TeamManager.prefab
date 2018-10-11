@@ -55,7 +55,8 @@ MonoBehaviour:
     type: 2}
   batterPrefab: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433,
     type: 2}
-  pitcherPrefab: {fileID: 0}
+  pitcherPrefab: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1,
+    type: 2}
   otherTeam: {fileID: 0}
   baseballBat: {fileID: 1838767353899028, guid: dfa437938e5b73f46baaf326c46ad1d9,
     type: 2}

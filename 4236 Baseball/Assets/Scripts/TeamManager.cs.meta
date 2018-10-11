@@ -8,7 +8,8 @@ MonoImporter:
       type: 2}
   - batterPrefab: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433,
       type: 2}
-  - pitcherPrefab: {instanceID: 0}
+  - pitcherPrefab: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1,
+      type: 2}
   - otherTeam: {instanceID: 0}
   - baseballBat: {instanceID: 0}
   executionOrder: 0
