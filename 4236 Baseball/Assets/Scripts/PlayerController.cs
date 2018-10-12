@@ -24,10 +24,10 @@ public class PlayerController : MonoBehaviour {
         animator = GetComponent<Animator>();
         
         
-        if (currentPlayer.name.Equals("Batting"))
-        {
-            animator.Play("Baseball Idle");
-        }
+       // if (currentPlayer.name.Equals("Batting"))
+        //{
+            //animator.Play("Baseball Idle");
+        //}
         if (currentPlayer.name.Equals("Pitcher"))
         {
             Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour {
                 }
                 if (component.name.Equals("Baseball"))
                 {
+                    Debug.Log("Baseball! Is here!");
                     baseball = component.gameObject;
                     baseball.transform.parent = rightHand.transform;
                     
@@ -60,14 +61,15 @@ public class PlayerController : MonoBehaviour {
             if (currentPlayer.name.Equals("Pitcher"))
             {
                 Debug.Log("Pitching");
+                animator.SetTrigger("Pitch");
                 pitch();
             }
-            if (currentPlayer.name.Equals("Batting"))
+            /*if (currentPlayer.name.Equals("Batting"))
             {
                 Debug.Log("Batter");
                 animator.SetTrigger("Swing");
                 
-            }
+            }*/
         }
         
         
@@ -76,18 +78,23 @@ public class PlayerController : MonoBehaviour {
 
     public void pitch()
     {
-        animator.SetTrigger("Pitch");
+        baseball.GetComponent <BaseballScript> ().Release();
+        
+        
+
+        /*
         Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
         foreach(Transform component in components)
         {
             if (component.name.Equals("Baseball"))
             {
                 component.parent = null;
-                Rigidbody rigidbody = component.GetComponent<Rigidbody>();
+                Rigidbody rigidbody = component.gameObject.AddComponent<Rigidbody>();
+                rigidbody.mass = 1;
                 rigidbody.useGravity = true;
                 rigidbody.drag = 0.5f;
             }
-        }
+        }*/
     }
 
    

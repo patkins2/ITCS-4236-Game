@@ -370,26 +370,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 54592618059465230, guid: 65e8ab1c3f96abf4a957c8715eeddce1,
-        type: 2}
-      propertyPath: m_IsKinematic
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 54592618059465230, guid: 65e8ab1c3f96abf4a957c8715eeddce1,
-        type: 2}
-      propertyPath: m_UseGravity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 54592618059465230, guid: 65e8ab1c3f96abf4a957c8715eeddce1,
-        type: 2}
-      propertyPath: m_Mass
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 54592618059465230, guid: 65e8ab1c3f96abf4a957c8715eeddce1,
-        type: 2}
-      propertyPath: m_Constraints
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 65e8ab1c3f96abf4a957c8715eeddce1, type: 2}
   m_IsPrefabAsset: 0
