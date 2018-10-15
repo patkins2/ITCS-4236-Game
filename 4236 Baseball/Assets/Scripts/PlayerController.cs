@@ -23,29 +23,25 @@ public class PlayerController : MonoBehaviour {
        
         animator = GetComponent<Animator>();
         
-        
-       // if (currentPlayer.name.Equals("Batting"))
-        //{
-            //animator.Play("Baseball Idle");
-        //}
         if (currentPlayer.name.Equals("Pitcher"))
         {
+            Debug.Log("In pitcher");
             Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
             foreach (Transform component in components)
             {
-                if (component.name.Equals("mixamorig:RightHand"))
-                {
-                    rightHand = component.gameObject;
-                }
                 if (component.name.Equals("Baseball"))
                 {
                     Debug.Log("Baseball! Is here!");
                     baseball = component.gameObject;
-                    baseball.transform.parent = rightHand.transform;
+                    Rigidbody rb = baseball.GetComponent<Rigidbody>();
+                    rb.detectCollisions = false;
+                    
+                  
                     
                 }
             }
         }
+        
        
         
         
@@ -62,7 +58,7 @@ public class PlayerController : MonoBehaviour {
             {
                 Debug.Log("Pitching");
                 animator.SetTrigger("Pitch");
-                pitch();
+                
             }
             /*if (currentPlayer.name.Equals("Batting"))
             {
@@ -79,7 +75,7 @@ public class PlayerController : MonoBehaviour {
     public void pitch()
     {
         baseball.GetComponent <BaseballScript> ().Release();
-        
+        animator.ResetTrigger("Pitch");
         
 
         /*
