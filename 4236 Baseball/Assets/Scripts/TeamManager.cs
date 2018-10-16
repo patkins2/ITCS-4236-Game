@@ -54,49 +54,34 @@ public class TeamManager : MonoBehaviour {
 		for (int i = 0; i < maxPlayers; i++) {
 
             //Instantiate player prefab
-            GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, this.transform);
-            newPlayer.name = "Player " + (i + 1);
+           
 
             //Loop through field positions until empty position is found
             for (int c = 0; c < fieldPositions.childCount; c++) {
                 FieldPositions position = fieldPositions.GetChild(c).GetComponent<FieldPositions>();
-                
-
-                
+               
                 //If empty position is found, move player to position location and break;
                 if (!position.positionOccupied) {
                     print("Adding player to position: " + position.gameObject.name);
+                    GameObject newPlayer;
                     //If the posisition is a batter, create a bat object and attach it to the player's hand
                     if (position.name.Equals("Batting"))
                     {
                         newPlayer = Instantiate(batterPrefab, Vector3.zero, Quaternion.identity, this.transform);
-                        newPlayer.name = "Batting";
-                        /*
-                        GameObject hand = null;
-
-                        //Gets all of the children objects of the player
-                        Transform[] children = GetComponentsInChildren<Transform>();
-                        foreach (Transform child in children)
-                        {
-                            if (child.name.Equals("mixamorig:RightHand"))
-                            {
-                                //Gets the right hand object
-                                hand = child.gameObject;
-                            }
-                        }
-                        position.isBatter = true;
-
-                        //Creates a bat and places in the right hand of the player
-                        
-                        //Attaches the bat so it will move with the player's hand
-                        */
-                    }
-
-                    if (position.name.Equals("Pitcher"))
+                        newPlayer.name = position.name;
+                    }else if (position.name.Equals("Pitcher"))
                     {
                         newPlayer = Instantiate(pitcherPrefab, Vector3.zero, Quaternion.identity, this.transform);
                         newPlayer.name = position.name;
-                        
+                    }else if (position.name.Equals("Batter On Deck"))
+                    {
+                        newPlayer = Instantiate(batterPrefab, Vector3.zero, Quaternion.identity, this.transform);
+                        newPlayer.name = position.name;
+                    }
+                    else
+                    {
+                        newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, this.transform);
+                        newPlayer.name = "Player " + (i + 1);
                     }
                     position.positionOccupied = true;
                     newPlayer.transform.position = position.transform.position;

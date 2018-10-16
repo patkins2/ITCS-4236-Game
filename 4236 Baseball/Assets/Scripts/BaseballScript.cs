@@ -12,11 +12,9 @@ public class BaseballScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         ball.transform.parent = rightHand.transform;
-        //ball.transform.parent = rightHand.transform;
         rb = ball.GetComponent<Rigidbody>();
+        rb.detectCollisions = false;
         rb.useGravity = false;
-        
-
 	}
 	
 	// Update is called once per frame
@@ -24,13 +22,14 @@ public class BaseballScript : MonoBehaviour {
         
     }
 
-    public void Release()
+    public void ReleaseBall()
     {
+        rb.constraints = RigidbodyConstraints.None;
         ball.transform.parent = null;
         rb.detectCollisions = true;
 
         rb.useGravity = true;
-        ball.transform.rotation = rightHand.transform.rotation;
+        ball.transform.rotation = currentPlayer.transform.rotation;
         rb.AddForce(ball.transform.forward * 5000);
     }
 }

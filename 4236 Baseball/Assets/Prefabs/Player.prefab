@@ -2164,6 +2164,8 @@ MonoBehaviour:
   maxPower: 0
   runSpeed: 0
   swingPower: 0
+  batter: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433, type: 2}
+  pitcher: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1, type: 2}
 --- !u!136 &136073850283366268
 CapsuleCollider:
   m_ObjectHideFlags: 1
