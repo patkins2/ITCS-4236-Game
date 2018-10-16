@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour {
                 }
                 
             }
-            animator.Play("Baseball Walk In");
+            animator.Play("Baseball Idle");
 
         }else if(currentPlayer.name.Equals("Batter On Deck"))
         {

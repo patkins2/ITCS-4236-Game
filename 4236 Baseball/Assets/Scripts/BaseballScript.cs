@@ -24,9 +24,10 @@ public class BaseballScript : MonoBehaviour {
 
     public void ReleaseBall()
     {
+        rb.detectCollisions = true;
         rb.constraints = RigidbodyConstraints.None;
         ball.transform.parent = null;
-        rb.detectCollisions = true;
+        
 
         rb.useGravity = true;
         ball.transform.rotation = currentPlayer.transform.rotation;
