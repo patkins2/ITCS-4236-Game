@@ -1,0 +1,20 @@
+﻿<Properties StartupConfiguration="{CB594175-CF21-A8A7-3F6F-0F683D123708}|">
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/TeamManager.cs">
+    <Files>
+      <File FileName="Assets/Scripts/BatScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/PlayerController.cs" Line="40" Column="1" />
+      <File FileName="Assets/Scripts/TeamManager.cs" Line="50" Column="1" />
+      <File FileName="Assets/Scripts/GameManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/BaseballScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Enums.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/FieldPositions.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

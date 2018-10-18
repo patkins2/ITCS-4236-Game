@@ -108,6 +108,7 @@ public class PlayerController : MonoBehaviour {
             {
                 Debug.Log("Pitching");
                 animator.SetTrigger("Pitch");
+                pitch();
                 
             }
             if (currentPlayer.name.Equals("Batting"))
