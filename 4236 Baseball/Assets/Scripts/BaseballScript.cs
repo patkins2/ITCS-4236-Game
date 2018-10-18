@@ -29,7 +29,7 @@ public class BaseballScript : MonoBehaviour {
         ball.transform.parent = null;
         
 
-        rb.useGravity = true;
+        //rb.useGravity = true;
         ball.transform.rotation = currentPlayer.transform.rotation;
         rb.AddForce(ball.transform.forward * 5000);
     }

@@ -6,6 +6,8 @@ MonoImporter:
   defaultReferences:
   - currentPlayer: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1,
       type: 2}
+  - rightHand: {instanceID: 0}
+  - ball: {fileID: 1386998610386750, guid: b1e7be41b994e4d789598d827d0b57ff, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
