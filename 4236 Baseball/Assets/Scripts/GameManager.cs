@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField] private GameObject teamMngrPrefab;
     private GameObject team1, team2;
+    private Transform fieldPositions;
+    private Transform battingPositions;
 
     // Use this for initialization
     void Start () {
@@ -32,9 +34,4 @@ public class GameManager : MonoBehaviour {
         team2 = Instantiate(teamMngrPrefab, Vector3.zero, Quaternion.identity);
         team2.name = "Team 2";
     }
-	
-	// Update is called once per frame
-	void Update () {
-        //print(transform.gameObject.transform.gameObject.transform.gameObject.transform.position);
-	}
 }

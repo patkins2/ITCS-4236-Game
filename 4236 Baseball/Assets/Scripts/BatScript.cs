@@ -10,7 +10,6 @@ public class BatScript : MonoBehaviour {
     //[SerializeField] private GameObject bat;
     private GameObject bat;
 
-
     // Use this for initialization
     void Start () {
         bat = this.gameObject;
@@ -19,11 +18,6 @@ public class BatScript : MonoBehaviour {
         rb.detectCollisions = false;
         rb.useGravity = false;
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void ReleaseBat()
     {

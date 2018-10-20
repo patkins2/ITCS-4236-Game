@@ -17,6 +17,8 @@ using UnityEngine;
  */
 public class TeamManager : MonoBehaviour {
 
+    //Generic player prefab for all positions other than batter and pitcher, 
+    // since those are the only ones that need a gameobject attached to them (ball and bat)
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject batterPrefab;
     [SerializeField] private GameObject pitcherPrefab;
@@ -24,76 +26,200 @@ public class TeamManager : MonoBehaviour {
     [SerializeField] private GameObject baseballBat;
 
     private Transform fieldPositions;
+    private Transform battingPositions;
     private int maxPlayers = 9;
-	[HideInInspector] public enum TeamRole {fielding, batting};
+	[HideInInspector] public enum TeamRole {FIELDING, BATTING};
     public TeamRole role;
 
     private void Awake() {
-        role = TeamRole.fielding;
+        role = TeamRole.FIELDING;
     }
+
     // Use this for initialization
     void Start() {
 
+        //Set each team to recognize the other team
         TeamManager[] teams = FindObjectsOfType<TeamManager>();
         otherTeam = name.Equals(teams[0].gameObject.name) ? teams[1] : teams[0];
-    
+        
+        //Print to make sure each team knows who they are and who they're playing against
         print("This team:" + name);
-        print("Other team:" + teams[0].gameObject.name);
+        print("Other team:" + otherTeam.gameObject.name);
 
         //check role of other team
-        //if undefined, default to fielding
-        if (otherTeam.role == TeamRole.fielding) {
-            role = TeamRole.batting;
-            fieldPositions = GameObject.Find("Batting Positions").transform;
+        //if undefined, default self to fielding
+        if (otherTeam.role == TeamRole.FIELDING) {
+            role = TeamRole.BATTING;
         }
-        else
-            fieldPositions = GameObject.Find("Fielding Positions").transform;
 
+        //Keeps list of all the batting and fielding positions
+        battingPositions = GameObject.Find("Batting Positions").transform;
+        fieldPositions = GameObject.Find("Fielding Positions").transform;
 
+        AssignPlayersToPositions();
+		
+	}
 
-		for (int i = 0; i < maxPlayers; i++) {
+    private void AssignPlayersToPositions() {
+        print("This team's role is " + role.ToString());
+        //First check this team's current role and then assign players to their proper positions
+        if (role == TeamRole.FIELDING) {
+            
+            AssignPositions_Fielding();
+        }
+        else if (role == TeamRole.BATTING) {
+            AssignPositions_Batting();
+        }
+        else {
+            Debug.LogError("Team role is unassigned");
+        }
 
-            //Instantiate player prefab
-           
+        
+    }
+
+    private void AssignPositions_Fielding() {
+        //Loop 9 times, each time creating a player and their position to play on the field
+        for (int i = 0; i < maxPlayers; i++) {
 
             //Loop through field positions until empty position is found
             for (int c = 0; c < fieldPositions.childCount; c++) {
+
                 FieldPositions position = fieldPositions.GetChild(c).GetComponent<FieldPositions>();
-               
-                //If empty position is found, move player to position location and break;
+
+                //If current position is empty, create a player to fill that position
                 if (!position.positionOccupied) {
-                    print("Adding player to position: " + position.gameObject.name);
-                    GameObject newPlayer;
-                    //If the posisition is a batter, create a bat object and attach it to the player's hand
-                    if (position.name.Equals("Batting"))
-                    {
-                        newPlayer = Instantiate(batterPrefab, Vector3.zero, Quaternion.identity, this.transform);
-                        newPlayer.name = position.name;
-                    }else if (position.name.Equals("Pitcher"))
-                    {
-                        newPlayer = Instantiate(pitcherPrefab, Vector3.zero, Quaternion.identity, this.transform);
-                        newPlayer.name = position.name;
-                    }else if (position.name.Equals("Batter On Deck"))
-                    {
-                        newPlayer = Instantiate(batterPrefab, Vector3.zero, Quaternion.identity, this.transform);
-                        newPlayer.name = position.name;
+                    //print("Found empty position: " + position.gameObject.name);
+                    GameObject newPlayer = null;
+
+                    if (position.name.Equals("Pitcher")) {
+                        newPlayer = CreatePlayer(pitcherPrefab, position.name);
                     }
-                    else
-                    {
-                        newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, this.transform);
-                        newPlayer.name = "Player " + (i + 1);
+                    else if (position.name.Equals("Catcher")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
                     }
+                    else if (position.name.Equals("First Base")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                    }
+                    else if (position.name.Equals("Second Base")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                    }
+                    else if (position.name.Equals("Third Base")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                    }
+                    else if (position.name.Equals("Short Stop")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                    }
+                    else if (position.name.Equals("Left Field")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                    }
+                    else if (position.name.Equals("Right Field")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                    }
+                    else if (position.name.Equals("Center Field")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                    }
+                    else {  //if position is found that isn't a batting position, error
+                        Debug.LogError("Position called \"" + position.name + "\" not found");
+                    }
+
                     position.positionOccupied = true;
-                    newPlayer.transform.position = position.transform.position;
+                    //if new player was created, move them to their playing position
+                    if (newPlayer)
+                        newPlayer.transform.position = position.transform.position;
                     break;
                 }
             }
-            //Assign new player to empty position
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    }
+
+    private void AssignPositions_Batting() {
+        //Loop 9 times, each time creating a player and their position to play on the field
+        for (int i = 0; i < maxPlayers; i++) {
+
+            //Loop through field positions until empty position is found
+            for (int c = 0; c < battingPositions.childCount; c++) {
+
+                FieldPositions position = battingPositions.GetChild(c).GetComponent<FieldPositions>();
+
+                //If current position is empty, create a player to fill that position
+                if (!position.positionOccupied) {
+                    //print("Found empty position: " + position.gameObject.name);
+                    GameObject newPlayer = null;
+                    
+                    if (position.name.Equals("Batting")) {
+                        newPlayer = CreatePlayer(batterPrefab, position.name);
+                    }
+                    else if (position.name.Equals("Batter On Deck")) {
+                        newPlayer = CreatePlayer(batterPrefab, position.name);
+                    }
+                    else if (position.name.Equals("Bench")) {
+                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                        newPlayer.name += " " + (i-1).ToString();   //add a number to differentiate the benched players
+                    }
+                    else {  //if position is found that isn't a batting position, error
+                        Debug.LogError("Position called \"" + position.name + "\" not found");
+                    }
+
+                    position.positionOccupied = true;
+                    //if new player was created, move them to their playing position
+                    if (newPlayer)
+                        newPlayer.transform.position = position.transform.position;
+                    break;
+                }
+            }
+        }
+    }
+
+    private GameObject CreatePlayer(GameObject playerPrefab, string positionName) {
+        GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, this.transform);
+        newPlayer.name = positionName;
+
+        //Assign player's enum position bby comparing to current position's name
+        PlayerController playerController = newPlayer.GetComponent<PlayerController>();
+
+        switch (positionName) {
+            case ("Pitcher"):
+                playerController.myPosition = PlayerController.Position.PITCHER;
+                break;
+            case "Catcher":
+                playerController.myPosition = PlayerController.Position.CATCHER;
+                break;
+            case ("First Base"):
+                playerController.myPosition = PlayerController.Position.BASEMAN_FIRST;
+                break;
+            case "Second Base":
+                playerController.myPosition = PlayerController.Position.BASEMAN_SECOND;
+                break;
+            case ("Third Base"):
+                playerController.myPosition = PlayerController.Position.BASEMAN_THIRD;
+                break;
+            case "Short Stop":
+                playerController.myPosition = PlayerController.Position.SHORTSTOP;
+                break;
+            case ("Left Field"):
+                playerController.myPosition = PlayerController.Position.OUTFIELD_LEFT;
+                break;
+            case "Center Field":
+                playerController.myPosition = PlayerController.Position.OUTFIELD_CENTER;
+                break;
+            case ("Right Field"):
+                playerController.myPosition = PlayerController.Position.OUTFIELD_RIGHT;
+                break;
+            case "Batting":
+                playerController.myPosition = PlayerController.Position.BATTER;
+                break;
+            case "Batter On Deck":
+                playerController.myPosition = PlayerController.Position.ONDECK;
+                break;
+            case "Bench":
+                playerController.myPosition = PlayerController.Position.BENCH;
+                break;
+            default:
+                playerController.myPosition = PlayerController.Position.INVALID;
+                Debug.LogError("Bad Position Assignment");
+                break;
+        }
+
+        return newPlayer;
+    }
 }

@@ -513,11 +513,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1143922995553428, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}
       propertyPath: m_Name
-      value: Bench(5)
+      value: Bench
       objectReference: {fileID: 0}
     - target: {fileID: 1542979111124440, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}
       propertyPath: m_Name
-      value: Bench(6)
+      value: Bench
       objectReference: {fileID: 0}
     - target: {fileID: 4114362796224664, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}
       propertyPath: m_LocalPosition.x
@@ -526,6 +526,22 @@ Prefab:
     - target: {fileID: 4114362796224664, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}
       propertyPath: m_LocalPosition.z
       value: 29.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 1333094139661994, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}
+      propertyPath: m_Name
+      value: Bench
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639960097897704, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}
+      propertyPath: m_Name
+      value: Bench
+      objectReference: {fileID: 0}
+    - target: {fileID: 1325717877689766, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}
+      propertyPath: m_Name
+      value: Bench
+      objectReference: {fileID: 0}
+    - target: {fileID: 1418535654893788, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}
+      propertyPath: m_Name
+      value: Bench
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 54551478652320246, guid: c78640b97b1a0e343a6fa8ec88e91d3d, type: 2}

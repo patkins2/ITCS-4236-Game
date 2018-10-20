@@ -8,6 +8,16 @@ using UnityEngine;
  */ 
 public class PlayerController : MonoBehaviour {
 
+    public enum Position 
+    {
+        PITCHER, CATCHER,
+        BASEMAN_FIRST, BASEMAN_SECOND, BASEMAN_THIRD,
+        SHORTSTOP, OUTFIELD_LEFT, OUTFIELD_CENTER, OUTFIELD_RIGHT,
+        BATTER, ONDECK, BENCH, INVALID
+    }
+
+    public Position myPosition = Position.INVALID;
+
     [SerializeField] private float minSpeed, maxSpeed, minPower, maxPower;
     [SerializeField] private float runSpeed, swingPower;
 
@@ -25,8 +35,8 @@ public class PlayerController : MonoBehaviour {
     private bool running;
     private bool firstBaseVisited, secondBaseVisited, thirdBaseVisited;
     private GameObject bat;
-    private Animator animator;
-    private float radiusOfSatisfaction;
+    private Animator anim;
+    private float radiusOfSatisfaction;     //distance to destination when they can stop the running animation and start slowing down
 	// Use this for initialization
 	void Start () {
         radiusOfSatisfaction = 1.0f;
@@ -36,51 +46,55 @@ public class PlayerController : MonoBehaviour {
         firstBaseVisited = secondBaseVisited = thirdBaseVisited = false;
         runSpeed = Random.Range(minSpeed, maxSpeed);
         swingPower = Random.Range(minPower, maxPower);
-        
+        anim = GetComponent<Animator>();
+
         Transform[] fieldingPositions = GameObject.Find("Stadium").GetComponentsInChildren<Transform>();
         foreach(Transform position in fieldingPositions)
         {
             if(position.name.Equals("First Base"))
             {
+                //print("Found first base");
                 firstBase = position.gameObject;
             }
-            if(position.name.Equals("Second Base"))
+            else if(position.name.Equals("Second Base"))
             {
-                secondBase = position.gameObject;
+                //print("Found second base");
+                secondBase = position.gameObject;   
             }
-            if(position.name.Equals("Third Base"))
+            else if(position.name.Equals("Third Base"))
             {
-                thirdBase = position.gameObject;
+                //print("Found third base");
+                thirdBase = position.gameObject; 
             }
         }
 
+        //Make all players face the batter, except the batter who faces the pitcher
         Vector3 relativePos;
         
         if (currentPlayer.name.Equals("Batting"))
         {
-            relativePos = pitcher.transform.position - trans.position;
+            relativePos = pitcher.transform.position - trans.position;  //direction: batter -> pitcher
         }
         else
         {
-            relativePos = batter.transform.position - trans.position;
+            relativePos = batter.transform.position - trans.position;   //direction: this player -> batter
         }
         Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         trans.rotation = rotation;
        
-        animator = GetComponent<Animator>();
         
-        if (currentPlayer.name.Equals("Pitcher"))
+        if (currentPlayer.name.Equals("Pitcher"))   //if this player is the pitcher, find the baseball child component and store a reference to its GameObject
         {
             Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
             foreach (Transform component in components)
             {
                 if (component.name.Equals("Baseball"))
                 {
-                    
                     baseball = component.gameObject;
                 }
             }
-        }else if (currentPlayer.name.Equals("Batting"))
+        }
+        else if (currentPlayer.name.Equals("Batting"))  //if this player is the batter, find the baseball bat child component and store a reference to its GameObject
         {
             Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
             foreach(Transform component in components)
@@ -91,32 +105,32 @@ public class PlayerController : MonoBehaviour {
                 }
                 
             }
-            animator.Play("Baseball Idle");
+            anim.Play("Baseball Idle");
 
-        }else if(currentPlayer.name.Equals("Batter On Deck"))
+        }
+        else if(currentPlayer.name.Equals("Batter On Deck"))
         {
-            animator.Play("Batter On Deck");
+            anim.Play("Batter On Deck");
         }
    
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (currentPlayer.name.Equals("Pitcher"))
-            {
+        if (Input.GetMouseButtonDown(1)) {
+            if (currentPlayer.name.Equals("Pitcher")) {
                 Debug.Log("Pitching");
-                animator.SetTrigger("Pitch");
-                
-            }
-            if (currentPlayer.name.Equals("Batting"))
-            {
+                anim.SetTrigger("Pitch");    
+            }  
+        }
+
+        if (Input.GetMouseButtonDown(0)) {
+            if (currentPlayer.name.Equals("Batting")) {
                 Debug.Log("Batter");
-                animator.SetTrigger("Swing");
-                
+                anim.SetTrigger("Swing");
             }
         }
+        
 
         if (running)
         {
@@ -127,19 +141,19 @@ public class PlayerController : MonoBehaviour {
     public void pitch()
     {
         baseball.GetComponent <BaseballScript> ().ReleaseBall();
-        animator.ResetTrigger("Pitch");
+        anim.ResetTrigger("Pitch");
         
     }
 
     public void hit()
     {
         bat.GetComponent <BatScript> ().ReleaseBat();
-        animator.ResetTrigger("Swing");
+        anim.ResetTrigger("Swing");
     }
 
     public void run()
     {
-        animator.SetTrigger("Run");
+        anim.SetTrigger("Run");
         running = true;
     }
 
@@ -180,8 +194,8 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            animator.SetTrigger("No Run");
-            animator.ResetTrigger("Run");
+            anim.SetTrigger("No Run");
+            anim.ResetTrigger("Run");
             running = false;
         }
         

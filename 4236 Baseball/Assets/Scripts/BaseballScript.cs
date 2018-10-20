@@ -16,11 +16,6 @@ public class BaseballScript : MonoBehaviour {
         rb.detectCollisions = false;
         rb.useGravity = false;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        
-    }
 
     public void ReleaseBall()
     {
