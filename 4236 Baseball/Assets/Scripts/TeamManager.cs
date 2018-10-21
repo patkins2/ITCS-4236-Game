@@ -25,8 +25,6 @@ public class TeamManager : MonoBehaviour {
     [SerializeField] private TeamManager otherTeam;
     [SerializeField] private GameObject baseballBat;
 
-    private Transform fieldPositions;
-    private Transform battingPositions;
     private int maxPlayers = 9;
 	[HideInInspector] public enum TeamRole {FIELDING, BATTING};
     public TeamRole role;
@@ -52,17 +50,13 @@ public class TeamManager : MonoBehaviour {
             role = TeamRole.BATTING;
         }
 
-        //Keeps list of all the batting and fielding positions
-        battingPositions = GameObject.Find("Batting Positions").transform;
-        fieldPositions = GameObject.Find("Fielding Positions").transform;
-
         AssignPlayersToPositions();
 		
 	}
 
+    //Checks the current team's role and then assigns players to their proper positions
     private void AssignPlayersToPositions() {
         print("This team's role is " + role.ToString());
-        //First check this team's current role and then assign players to their proper positions
         if (role == TeamRole.FIELDING) {
             
             AssignPositions_Fielding();
@@ -72,19 +66,18 @@ public class TeamManager : MonoBehaviour {
         }
         else {
             Debug.LogError("Team role is unassigned");
-        }
-
-        
+        } 
     }
 
+    //Assigns positions to players on the fielding team
     private void AssignPositions_Fielding() {
-        //Loop 9 times, each time creating a player and their position to play on the field
+        //Loop 9 times, each time creating a player and assigning them to their position to play on the field
         for (int i = 0; i < maxPlayers; i++) {
 
-            //Loop through field positions until empty position is found
-            for (int c = 0; c < fieldPositions.childCount; c++) {
+            //Loop through field positions until an empty position is found
+            for (int c = 0; c < GameManager.self.fieldPositions.childCount; c++) {
 
-                FieldPositions position = fieldPositions.GetChild(c).GetComponent<FieldPositions>();
+                FieldPositions position = GameManager.self.fieldPositions.GetChild(c).GetComponent<FieldPositions>();
 
                 //If current position is empty, create a player to fill that position
                 if (!position.positionOccupied) {
@@ -118,8 +111,8 @@ public class TeamManager : MonoBehaviour {
                     else if (position.name.Equals("Center Field")) {
                         newPlayer = CreatePlayer(playerPrefab, position.name);
                     }
-                    else {  //if position is found that isn't a batting position, error
-                        Debug.LogError("Position called \"" + position.name + "\" not found");
+                    else {  //if position is found that isn't a fielding position, error
+                        Debug.LogError("Fielding Position called \"" + position.name + "\" not found");
                     }
 
                     position.positionOccupied = true;
@@ -132,14 +125,15 @@ public class TeamManager : MonoBehaviour {
         }
     }
 
+    //Assigns players on the batting team to their proper positions
     private void AssignPositions_Batting() {
         //Loop 9 times, each time creating a player and their position to play on the field
         for (int i = 0; i < maxPlayers; i++) {
 
             //Loop through field positions until empty position is found
-            for (int c = 0; c < battingPositions.childCount; c++) {
+            for (int c = 0; c < GameManager.self.battingPositions.childCount; c++) {
 
-                FieldPositions position = battingPositions.GetChild(c).GetComponent<FieldPositions>();
+                FieldPositions position = GameManager.self.battingPositions.GetChild(c).GetComponent<FieldPositions>();
 
                 //If current position is empty, create a player to fill that position
                 if (!position.positionOccupied) {
@@ -154,10 +148,10 @@ public class TeamManager : MonoBehaviour {
                     }
                     else if (position.name.Equals("Bench")) {
                         newPlayer = CreatePlayer(playerPrefab, position.name);
-                        newPlayer.name += " " + (i-1).ToString();   //add a number to differentiate the benched players
+                        newPlayer.name += " " + (i-1).ToString();   //add a number to the player's name to differentiate the benched players
                     }
                     else {  //if position is found that isn't a batting position, error
-                        Debug.LogError("Position called \"" + position.name + "\" not found");
+                        Debug.LogError("Batting position called \"" + position.name + "\" not found");
                     }
 
                     position.positionOccupied = true;
@@ -174,9 +168,11 @@ public class TeamManager : MonoBehaviour {
         GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity, this.transform);
         newPlayer.name = positionName;
 
-        //Assign player's enum position bby comparing to current position's name
+        //Access controller script of the new player to assign their position
         PlayerController playerController = newPlayer.GetComponent<PlayerController>();
 
+        //Tells new player what position they play
+        //TODO move enum from PlayerController to either GameManager or an enum class
         switch (positionName) {
             case ("Pitcher"):
                 playerController.myPosition = PlayerController.Position.PITCHER;

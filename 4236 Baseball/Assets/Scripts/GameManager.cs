@@ -24,8 +24,8 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField] private GameObject teamMngrPrefab;
     private GameObject team1, team2;
-    private Transform fieldPositions;
-    private Transform battingPositions;
+    public Transform fieldPositions { get; private set; }
+    public Transform battingPositions { get; private set; }
 
     // Use this for initialization
     void Start () {
@@ -33,5 +33,9 @@ public class GameManager : MonoBehaviour {
         team1.name = "Team 1";
         team2 = Instantiate(teamMngrPrefab, Vector3.zero, Quaternion.identity);
         team2.name = "Team 2";
+
+        //Keeps parent Transform of all the batting and fielding positions
+        battingPositions = GameObject.Find("Batting Positions").transform;
+        fieldPositions = GameObject.Find("Fielding Positions").transform;
     }
 }

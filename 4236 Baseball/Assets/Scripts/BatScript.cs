@@ -19,6 +19,7 @@ public class BatScript : MonoBehaviour {
         rb.useGravity = false;
     }
 
+    //Called by batter animator, drops bat from players hand and enables physics on it
     public void ReleaseBat()
     {
         rb.constraints = RigidbodyConstraints.None;

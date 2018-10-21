@@ -2424,6 +2424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d5d3571ffcd0e438dbd59c89ee58a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myPosition: 12
   minSpeed: 0
   maxSpeed: 0
   minPower: 0
@@ -2849,4 +2850,4 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 23974955279939044}
-  m_Enabled: 1
+  m_Enabled: 0

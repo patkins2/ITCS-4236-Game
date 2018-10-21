@@ -15,34 +15,34 @@ public class PlayerController : MonoBehaviour {
         SHORTSTOP, OUTFIELD_LEFT, OUTFIELD_CENTER, OUTFIELD_RIGHT,
         BATTER, ONDECK, BENCH, INVALID
     }
+    public Position myPosition = Position.INVALID;  //default before position is set
 
-    public Position myPosition = Position.INVALID;
+    [SerializeField] private GameObject batter;
+    [SerializeField] private GameObject pitcher;
 
     [SerializeField] private float minSpeed, maxSpeed, minPower, maxPower;
     [SerializeField] private float runSpeed, swingPower;
 
+    private Animator anim;
+    private Transform trans;
     private GameObject currentPlayer;
-    [SerializeField] private GameObject batter;
-    [SerializeField] private GameObject pitcher;
-
-
     private GameObject firstBase;
     private GameObject secondBase;
     private GameObject thirdBase;
-
-    private Transform trans;
     private GameObject baseball;
-    private bool running;
-    private bool firstBaseVisited, secondBaseVisited, thirdBaseVisited;
     private GameObject bat;
-    private Animator anim;
-    private float radiusOfSatisfaction;     //distance to destination when they can stop the running animation and start slowing down
-	// Use this for initialization
+
+    private bool running = false;
+    private bool firstBaseVisited = false;
+    private bool secondBaseVisited = false;
+    private bool thirdBaseVisited = false;
+    private float radiusOfSatisfaction = 1f;     //distance to destination when they can stop the running animation and start slowing down
+	
+    // Use this for initialization
 	void Start () {
-        radiusOfSatisfaction = 1.0f;
         currentPlayer = this.gameObject;
-        trans = currentPlayer.transform;
-        running = false;
+        //trans = currentPlayer.transform;
+        trans = transform;
         firstBaseVisited = secondBaseVisited = thirdBaseVisited = false;
         runSpeed = Random.Range(minSpeed, maxSpeed);
         swingPower = Random.Range(minPower, maxPower);
@@ -103,10 +103,8 @@ public class PlayerController : MonoBehaviour {
                 {
                     bat = component.gameObject;
                 }
-                
             }
             anim.Play("Baseball Idle");
-
         }
         else if(currentPlayer.name.Equals("Batter On Deck"))
         {
@@ -115,8 +113,8 @@ public class PlayerController : MonoBehaviour {
    
     }
 	
-	// Update is called once per frame
 	void Update () {
+        //When player right clicks, the ball is pitched to batter
         if (Input.GetMouseButtonDown(1)) {
             if (currentPlayer.name.Equals("Pitcher")) {
                 Debug.Log("Pitching");
@@ -124,6 +122,7 @@ public class PlayerController : MonoBehaviour {
             }  
         }
 
+        //when player left clicks, batter swings and starts running
         if (Input.GetMouseButtonDown(0)) {
             if (currentPlayer.name.Equals("Batting")) {
                 Debug.Log("Batter");
@@ -131,7 +130,6 @@ public class PlayerController : MonoBehaviour {
             }
         }
         
-
         if (running)
         {
             runToBase();
@@ -142,8 +140,7 @@ public class PlayerController : MonoBehaviour {
     {
         baseball.GetComponent <BaseballScript> ().ReleaseBall();
         anim.ResetTrigger("Pitch");
-        
-    }
+            }
 
     public void hit()
     {
@@ -197,8 +194,7 @@ public class PlayerController : MonoBehaviour {
             anim.SetTrigger("No Run");
             anim.ResetTrigger("Run");
             running = false;
-        }
-        
+        }   
     }
     
    
