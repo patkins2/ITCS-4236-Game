@@ -24,6 +24,7 @@ public class TeamManager : MonoBehaviour {
     [SerializeField] private GameObject pitcherPrefab;
     [SerializeField] private TeamManager otherTeam;
     [SerializeField] private GameObject baseballBat;
+    [SerializeField] private GameObject strikeZone;
 
     private int maxPlayers = 9;
 	[HideInInspector] public enum TeamRole {FIELDING, BATTING};
@@ -35,6 +36,8 @@ public class TeamManager : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+
+        Instantiate(strikeZone, new Vector3(0.04f, 0.06f, 0.11f), Quaternion.identity);
 
         //Set each team to recognize the other team
         TeamManager[] teams = FindObjectsOfType<TeamManager>();

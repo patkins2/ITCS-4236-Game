@@ -3,7 +3,11 @@ guid: 22d5d3571ffcd0e438dbd59c89ee58a0
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - batter: {instanceID: 0}
+  - pitcher: {instanceID: 0}
+  - strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

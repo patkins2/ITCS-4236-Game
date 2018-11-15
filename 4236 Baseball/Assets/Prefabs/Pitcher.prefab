@@ -1923,7 +1923,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1713238749872558}
   m_LocalRotation: {x: 0.0020838387, y: -0.024276761, z: -0.001428598, w: 0.9997021}
-  m_LocalPosition: {x: -0.1741999, y: -1.0137434, z: 15.488348}
+  m_LocalPosition: {x: 0.29, y: -1.05, z: 10.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4157726050099150}
@@ -2252,6 +2252,8 @@ MonoBehaviour:
   currentPlayer: {fileID: 1713238749872558}
   rightHand: {fileID: 1850858687040070}
   ball: {fileID: 1822863044695666}
+  strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd, type: 2}
+  throwForce: 5000
 --- !u!114 &114329123161146900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2263,14 +2265,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d5d3571ffcd0e438dbd59c89ee58a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myPosition: 12
+  batter: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433, type: 2}
+  pitcher: {fileID: 1713238749872558}
+  strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd, type: 2}
   minSpeed: 0
   maxSpeed: 0
   minPower: 0
   maxPower: 0
   runSpeed: 0
   swingPower: 0
-  batter: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433, type: 2}
-  pitcher: {fileID: 1713238749872558}
 --- !u!135 &135721877231762602
 SphereCollider:
   m_ObjectHideFlags: 1

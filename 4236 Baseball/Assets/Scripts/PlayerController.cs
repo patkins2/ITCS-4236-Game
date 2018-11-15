@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField] private GameObject batter;
     [SerializeField] private GameObject pitcher;
+    [SerializeField] private GameObject strikeZone;
 
     [SerializeField] private float minSpeed, maxSpeed, minPower, maxPower;
     [SerializeField] private float runSpeed, swingPower;
@@ -74,6 +75,9 @@ public class PlayerController : MonoBehaviour {
         if (currentPlayer.name.Equals("Batting"))
         {
             relativePos = pitcher.transform.position - trans.position;  //direction: batter -> pitcher
+        }else if (currentPlayer.name.Equals("Pitcher"))
+        {
+            relativePos = strikeZone.transform.position - trans.position;
         }
         else
         {

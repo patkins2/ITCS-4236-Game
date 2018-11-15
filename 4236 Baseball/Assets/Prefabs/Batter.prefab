@@ -2425,14 +2425,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myPosition: 12
+  batter: {fileID: 1371912851445118}
+  pitcher: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1, type: 2}
+  strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd, type: 2}
   minSpeed: 0
   maxSpeed: 0
   minPower: 0
   maxPower: 0
   runSpeed: 0
   swingPower: 0
-  batter: {fileID: 1371912851445118}
-  pitcher: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1, type: 2}
 --- !u!114 &114949222799715240
 MonoBehaviour:
   m_ObjectHideFlags: 1

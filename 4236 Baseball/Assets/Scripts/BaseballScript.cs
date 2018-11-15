@@ -7,6 +7,7 @@ public class BaseballScript : MonoBehaviour {
     [SerializeField] private GameObject currentPlayer;
     [SerializeField] private GameObject rightHand;
     [SerializeField] private GameObject ball;
+    [SerializeField] private GameObject strikeZone;
     [SerializeField] private float throwForce = 5000f;      //How hard the ball is thrown
 
     private Rigidbody rb;
@@ -25,10 +26,11 @@ public class BaseballScript : MonoBehaviour {
         rb.detectCollisions = true;
         rb.constraints = RigidbodyConstraints.None;
         ball.transform.parent = null;
-        
 
+        Vector3 relativePos = strikeZone.transform.position - ball.transform.position;
         //rb.useGravity = true;
-        ball.transform.rotation = currentPlayer.transform.rotation;
+        Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+        ball.transform.rotation = rotation;
         rb.AddForce(ball.transform.forward * throwForce);
     }
 }

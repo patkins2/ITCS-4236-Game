@@ -60,4 +60,5 @@ MonoBehaviour:
   otherTeam: {fileID: 0}
   baseballBat: {fileID: 1838767353899028, guid: dfa437938e5b73f46baaf326c46ad1d9,
     type: 2}
+  strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd, type: 2}
   role: 0
