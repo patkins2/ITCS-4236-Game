@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4712112282967908}
   - component: {fileID: 33179153493472510}
   - component: {fileID: 23671409410897268}
+  - component: {fileID: 136972995821791078}
   m_Layer: 0
   m_Name: PC_BaseBall_Bat_LOD_0
   m_TagString: Untagged
@@ -1683,7 +1684,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1371912851445118}
   m_LocalRotation: {x: -0.013805355, y: -0.009651308, z: 0.0088264, w: 0.99981916}
-  m_LocalPosition: {x: 0.7671356, y: -1.0137434, z: 7.8627777}
+  m_LocalPosition: {x: -1.4466608, y: -1.0137434, z: -0.74201584}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4578557601589300}
@@ -2616,6 +2617,19 @@ CapsuleCollider:
   m_Height: 0.28062308
   m_Direction: 1
   m_Center: {x: -0.0038211346, y: 0.06847626, z: 0.013310432}
+--- !u!136 &136972995821791078
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1022976336646872}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.04
+  m_Height: 0.8100005
+  m_Direction: 1
+  m_Center: {x: 0.000000133749, y: 0.40000024, z: -0.00009986104}
 --- !u!136 &136976368879613890
 CapsuleCollider:
   m_ObjectHideFlags: 1

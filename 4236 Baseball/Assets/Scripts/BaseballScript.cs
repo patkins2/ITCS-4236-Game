@@ -11,9 +11,13 @@ public class BaseballScript : MonoBehaviour {
     [SerializeField] private float throwForce = 5000f;      //How hard the ball is thrown
 
     private Rigidbody rb;
-    
-	// Use this for initialization
-	void Start () {
+    private Collision collision;
+    private Vector3 relativePos;
+    private Quaternion rotation;
+
+
+    // Use this for initialization
+    void Start () {
         ball.transform.parent = rightHand.transform;
         rb = ball.GetComponent<Rigidbody>();
         rb.detectCollisions = false;
@@ -27,10 +31,43 @@ public class BaseballScript : MonoBehaviour {
         rb.constraints = RigidbodyConstraints.None;
         ball.transform.parent = null;
 
-        Vector3 relativePos = strikeZone.transform.position - ball.transform.position;
+        relativePos = strikeZone.transform.position - ball.transform.position;
         //rb.useGravity = true;
-        Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+        rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         ball.transform.rotation = rotation;
         rb.AddForce(ball.transform.forward * throwForce);
+
+        /*if(collision.gameObject.name == "bat")
+        {
+
+        }*/
+    }
+
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.name == "Bat")
+        {
+            List<Vector3> positionList;
+            // ...
+
+            positionList = new List<Vector3>();
+
+            int maxIterations = Mathf.RoundToInt(5.0f / Time.fixedDeltaTime);
+            Vector3 pos = ball.transform.position;
+            Vector3 vel = rb.velocity;
+            float drag = rb.drag;
+            positionList.Add(pos);
+            float elapsedTime = 0.0f;
+
+            for (int i = 0; i < maxIterations; i++)
+            {
+                vel = vel + (Physics.gravity * Time.fixedDeltaTime);
+                vel *= drag;
+                pos += vel * Time.fixedDeltaTime;
+                elapsedTime += Time.fixedDeltaTime;
+                positionList.Add(pos);
+            }
+        }
     }
 }

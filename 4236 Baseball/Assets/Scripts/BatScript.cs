@@ -30,4 +30,5 @@ public class BatScript : MonoBehaviour {
         bat.transform.rotation = leftHand.transform.rotation;
         rb.AddForce(bat.transform.forward * 500);
     }
+
 }
