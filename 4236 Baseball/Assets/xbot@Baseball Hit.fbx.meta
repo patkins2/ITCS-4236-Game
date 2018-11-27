@@ -172,7 +172,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Baseball Hit
       takeName: mixamo.com
-      firstFrame: 0
+      firstFrame: 19
       lastFrame: 70
       wrapMode: 0
       orientationOffsetY: 0

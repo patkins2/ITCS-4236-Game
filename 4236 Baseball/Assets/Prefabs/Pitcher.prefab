@@ -977,7 +977,7 @@ GameObject:
   - component: {fileID: 114088506554566074}
   m_Layer: 0
   m_Name: Baseball
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -992,21 +992,6 @@ GameObject:
   - component: {fileID: 4393939491861262}
   m_Layer: 0
   m_Name: mixamorig:LeftHandMiddle2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1850858687040070
-GameObject:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4792713072573430}
-  m_Layer: 0
-  m_Name: Empty
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1544,7 +1529,7 @@ Transform:
   - {fileID: 4247254153373362}
   - {fileID: 4709530738289608}
   - {fileID: 4894874205164960}
-  - {fileID: 4792713072573430}
+  - {fileID: 4871897519283238}
   m_Father: {fileID: 4651307497487896}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1923,7 +1908,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1713238749872558}
   m_LocalRotation: {x: 0.0020838387, y: -0.024276761, z: -0.001428598, w: 0.9997021}
-  m_LocalPosition: {x: 0.29, y: -1.05, z: 10.86}
+  m_LocalPosition: {x: -0.590129, y: -1.0137453, z: 7.361761}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4157726050099150}
@@ -1932,20 +1917,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4792713072573430
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1850858687040070}
-  m_LocalRotation: {x: -0.66346174, y: 0.13701046, z: -0.14876072, w: 0.7203589}
-  m_LocalPosition: {x: -0.66813105, y: 0.4159477, z: -0.12626517}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 4871897519283238}
-  m_Father: {fileID: 4452476968055390}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: -66.22, y: 78.253006, z: -79.226006}
 --- !u!4 &4796862664456692
 Transform:
   m_ObjectHideFlags: 1
@@ -2009,12 +1980,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1822863044695666}
-  m_LocalRotation: {x: 0.2152579, y: 0.091637194, z: 0.61375225, w: 0.7540391}
-  m_LocalPosition: {x: 0.8796356, y: -0.1189101, z: -0.114124596}
-  m_LocalScale: {x: 0.100000024, y: 0.10000003, z: 0.099999994}
+  m_LocalRotation: {x: -0.24749056, y: 0.54450226, z: 0.23966011, w: 0.76474094}
+  m_LocalPosition: {x: 0.09062583, y: -0.045895856, z: -0.01712488}
+  m_LocalScale: {x: 0.10000017, y: 0.10000013, z: 0.10000007}
   m_Children: []
-  m_Father: {fileID: 4792713072573430}
-  m_RootOrder: 0
+  m_Father: {fileID: 4452476968055390}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4880699531777540
 Transform:
@@ -2195,7 +2166,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 14
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!65 &65284145332949888
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -2250,7 +2221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentPlayer: {fileID: 1713238749872558}
-  rightHand: {fileID: 1850858687040070}
+  rightHand: {fileID: 1241216592187120}
   ball: {fileID: 1822863044695666}
   strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd, type: 2}
   throwForce: 5000
@@ -2268,7 +2239,7 @@ MonoBehaviour:
   myPosition: 12
   batter: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433, type: 2}
   pitcher: {fileID: 1713238749872558}
-  strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd, type: 2}
+  strikeZone: {fileID: 0}
   minSpeed: 0
   maxSpeed: 0
   minPower: 0
@@ -2282,7 +2253,7 @@ SphereCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1822863044695666}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5

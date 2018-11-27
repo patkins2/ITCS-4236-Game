@@ -160,9 +160,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 1.2758188
-  m_TransitionOffset: 0.09016391
-  m_ExitTime: 0.84353364
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0.0441365
+  m_ExitTime: 0.7719356
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -418,7 +418,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Baseball Hit
-  m_Speed: 1
+  m_Speed: 1.2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101049446021668604}

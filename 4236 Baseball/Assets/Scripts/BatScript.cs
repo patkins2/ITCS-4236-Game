@@ -15,7 +15,7 @@ public class BatScript : MonoBehaviour {
         bat = this.gameObject;
         bat.transform.parent = leftHand.transform;
         rb = bat.GetComponent<Rigidbody>();
-        rb.detectCollisions = false;
+        //rb.detectCollisions = false;
         rb.useGravity = false;
     }
 
@@ -30,5 +30,23 @@ public class BatScript : MonoBehaviour {
         bat.transform.rotation = leftHand.transform.rotation;
         rb.AddForce(bat.transform.forward * 500);
     }
+    /*
+    private void OnCollisionEnter(Collision collision) {
+        print("Collided with: " + collision.gameObject.name);
+        if (collision.gameObject.CompareTag("Ball"))
+        {
+            print("hit ball");
+        }
+    }
+    private void OnCollisionStay(Collision collision) {
+        print(collision.gameObject.name + " is inside bat collider space");
+    }
+    */
 
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.CompareTag("Ball"))
+            print("triggered by ball");
+    }
+
+    
 }

@@ -22,6 +22,7 @@ public class BaseballScript : MonoBehaviour {
         rb = ball.GetComponent<Rigidbody>();
         rb.detectCollisions = false;
         rb.useGravity = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 	}
 
     //Called from pitcher animator, releases ball from pitcher's hand and launches towards the batter
@@ -35,7 +36,7 @@ public class BaseballScript : MonoBehaviour {
         //rb.useGravity = true;
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         ball.transform.rotation = rotation;
-        rb.AddForce(ball.transform.forward * throwForce);
+        rb.AddForce(relativePos.normalized * throwForce);
 
         /*if(collision.gameObject.name == "bat")
         {
@@ -43,11 +44,10 @@ public class BaseballScript : MonoBehaviour {
         }*/
     }
 
-
-    void OnCollisionEnter(Collision col)
-    {
-        if (col.gameObject.name == "Bat")
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.CompareTag("Bat"))
         {
+            print("Ball hit bat");
             List<Vector3> positionList;
             // ...
 
@@ -69,5 +69,11 @@ public class BaseballScript : MonoBehaviour {
                 positionList.Add(pos);
             }
         }
+        else if (other.gameObject.name.Equals("Catcher"))
+        {
+            //Add code to return ball to pitcher
+        }
+        else
+            print("Ball hit: " + other.gameObject.name);
     }
 }

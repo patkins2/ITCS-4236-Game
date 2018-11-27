@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField] private GameObject batter;
     [SerializeField] private GameObject pitcher;
-    [SerializeField] private GameObject strikeZone;
+    private GameObject strikeZone;
 
     [SerializeField] private float minSpeed, maxSpeed, minPower, maxPower;
     [SerializeField] private float runSpeed, swingPower;
@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour {
 	
     // Use this for initialization
 	void Start () {
+        strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
         currentPlayer = this.gameObject;
         //trans = currentPlayer.transform;
         trans = transform;
@@ -121,7 +122,7 @@ public class PlayerController : MonoBehaviour {
         //When player right clicks, the ball is pitched to batter
         if (Input.GetMouseButtonDown(1)) {
             if (currentPlayer.name.Equals("Pitcher")) {
-                Debug.Log("Pitching");
+                //Debug.Log("Pitching");
                 anim.SetTrigger("Pitch");    
             }  
         }
@@ -129,7 +130,7 @@ public class PlayerController : MonoBehaviour {
         //when player left clicks, batter swings and starts running
         if (Input.GetMouseButtonDown(0)) {
             if (currentPlayer.name.Equals("Batting")) {
-                Debug.Log("Batter");
+                //Debug.Log("Batter");
                 anim.SetTrigger("Swing");
             }
         }
@@ -165,18 +166,18 @@ public class PlayerController : MonoBehaviour {
         float step = 5f * Time.deltaTime;
         if (!firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
         {
-            Debug.Log("Running to first");
+            //Debug.Log("Running to first");
             baseRotation = firstBase.transform.rotation;
             basePosition = firstBase.transform.position;
             
         }else if(firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
         {
-            Debug.Log("Running to second");
+            //Debug.Log("Running to second");
             baseRotation = secondBase.transform.rotation;
             basePosition = secondBase.transform.position;
         }else if(firstBaseVisited && secondBaseVisited && !thirdBaseVisited)
         {
-            Debug.Log("Running to third");
+            //Debug.Log("Running to third");
             baseRotation = thirdBase.transform.rotation;
             basePosition = thirdBase.transform.position;
         }
