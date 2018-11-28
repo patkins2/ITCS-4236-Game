@@ -80,7 +80,7 @@ public class BaseballScript : MonoBehaviour {
             //Add code to return ball to pitcher
             
         }
-        else
-            print("Ball hit: " + other.gameObject.name);
+        //else
+            //print("Ball hit: " + other.gameObject.name);
     }
 }

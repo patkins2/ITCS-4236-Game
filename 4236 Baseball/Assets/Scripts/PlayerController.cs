@@ -72,20 +72,25 @@ public class PlayerController : MonoBehaviour {
 
         //Make all players face the batter, except the batter who faces the pitcher
         Vector3 relativePos;
-        
+        Quaternion rotation;
+
         if (currentPlayer.name.Equals("Batting"))
         {
             relativePos = pitcher.transform.position - trans.position;  //direction: batter -> pitcher
         }else if (currentPlayer.name.Equals("Pitcher"))
         {
             relativePos = strikeZone.transform.position - trans.position;
+            rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+            trans.rotation = rotation;
         }
         else
         {
             relativePos = batter.transform.position - trans.position;   //direction: this player -> batter
+            rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+            trans.rotation = rotation;
         }
-        Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-        trans.rotation = rotation;
+        //Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+        //trans.rotation = rotation;
        
         
         if (currentPlayer.name.Equals("Pitcher"))   //if this player is the pitcher, find the baseball child component and store a reference to its GameObject
