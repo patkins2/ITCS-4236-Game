@@ -8,12 +8,14 @@ public class BaseballScript : MonoBehaviour {
     [SerializeField] private GameObject rightHand;
     [SerializeField] private GameObject ball;
     [SerializeField] private GameObject strikeZone;
+    [SerializeField] private GameObject target;
     [SerializeField] private float throwForce = 5000f;      //How hard the ball is thrown
 
     private Rigidbody rb;
     private Collision collision;
     private Vector3 relativePos;
     private Quaternion rotation;
+   
 
 
     // Use this for initialization
@@ -48,31 +50,35 @@ public class BaseballScript : MonoBehaviour {
         if (other.gameObject.CompareTag("Bat"))
         {
              print("Ball hit bat");
-             List<Vector3> positionList;
+
+
+             relativePos = target.transform.position - ball.transform.position;
+             /*List<Vector3> positionList;
              // ...
 
              positionList = new List<Vector3>();
 
              int maxIterations = Mathf.RoundToInt(5.0f / Time.fixedDeltaTime);
-             Vector3 pos = ball.transform.position;
+             relativePos = ball.transform.position;
              Vector3 vel = rb.velocity;
              float drag = rb.drag;
-             positionList.Add(pos);
+             positionList.Add(relativePos);
              float elapsedTime = 0.0f;
 
              for (int i = 0; i < maxIterations; i++)
              {
                  vel = vel + (Physics.gravity * Time.fixedDeltaTime);
                  vel *= drag;
-                 pos += vel * Time.fixedDeltaTime;
+                relativePos += vel * Time.fixedDeltaTime * -1;
                  elapsedTime += Time.fixedDeltaTime;
-                 positionList.Add(pos);
-             }
+                 positionList.Add(relativePos);
+             }*/
            // relativePos *= -1;
         }
         else if (other.gameObject.name.Equals("Catcher"))
         {
             //Add code to return ball to pitcher
+            
         }
         else
             print("Ball hit: " + other.gameObject.name);

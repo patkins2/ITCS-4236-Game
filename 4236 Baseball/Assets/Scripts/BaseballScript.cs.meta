@@ -8,6 +8,9 @@ MonoImporter:
       type: 2}
   - rightHand: {instanceID: 0}
   - ball: {fileID: 1386998610386750, guid: b1e7be41b994e4d789598d827d0b57ff, type: 2}
+  - strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd,
+      type: 2}
+  - target: {fileID: 1829871630085590, guid: 5a9823cce491f5a49b3a6532d3de0394, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
