@@ -46,6 +46,7 @@ public class BatScript : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Ball"))
             print("triggered by ball");
+            //tell camera to go to overhead view
     }
 
     
