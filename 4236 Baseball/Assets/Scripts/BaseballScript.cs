@@ -24,7 +24,7 @@ public class BaseballScript : MonoBehaviour {
         rb = ball.GetComponent<Rigidbody>();
         rb.detectCollisions = false;
         rb.useGravity = false;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 	}
 
     //Called from pitcher animator, releases ball from pitcher's hand and launches towards the batter
@@ -53,27 +53,28 @@ public class BaseballScript : MonoBehaviour {
 
 
              relativePos = target.transform.position - ball.transform.position;
-             /*List<Vector3> positionList;
-             // ...
+             rb.AddForce(relativePos.normalized * throwForce * 2);
+            /*List<Vector3> positionList;
+            // ...
 
-             positionList = new List<Vector3>();
+            positionList = new List<Vector3>();
 
-             int maxIterations = Mathf.RoundToInt(5.0f / Time.fixedDeltaTime);
-             relativePos = ball.transform.position;
-             Vector3 vel = rb.velocity;
-             float drag = rb.drag;
-             positionList.Add(relativePos);
-             float elapsedTime = 0.0f;
+            int maxIterations = Mathf.RoundToInt(5.0f / Time.fixedDeltaTime);
+            relativePos = ball.transform.position;
+            Vector3 vel = rb.velocity;
+            float drag = rb.drag;
+            positionList.Add(relativePos);
+            float elapsedTime = 0.0f;
 
-             for (int i = 0; i < maxIterations; i++)
-             {
-                 vel = vel + (Physics.gravity * Time.fixedDeltaTime);
-                 vel *= drag;
-                relativePos += vel * Time.fixedDeltaTime * -1;
-                 elapsedTime += Time.fixedDeltaTime;
-                 positionList.Add(relativePos);
-             }*/
-           // relativePos *= -1;
+            for (int i = 0; i < maxIterations; i++)
+            {
+                vel = vel + (Physics.gravity * Time.fixedDeltaTime);
+                vel *= drag;
+               relativePos += vel * Time.fixedDeltaTime * -1;
+                elapsedTime += Time.fixedDeltaTime;
+                positionList.Add(relativePos);
+            }*/
+            // relativePos *= -1;
         }
         else if (other.gameObject.name.Equals("Catcher"))
         {

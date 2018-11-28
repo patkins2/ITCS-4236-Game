@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 5}
-  m_MinSize: {x: 950, y: 542}
+  m_MinSize: {x: 950, y: 521}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -67,10 +67,10 @@ MonoBehaviour:
     y: 0
     width: 529
     height: 947
-  m_MinSize: {x: 234, y: 492}
-  m_MaxSize: {x: 10004, y: 14042}
+  m_MinSize: {x: 234, y: 471}
+  m_MaxSize: {x: 10004, y: 14021}
   vertical: 1
-  controlID: 71
+  controlID: 126
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -89,8 +89,8 @@ MonoBehaviour:
     y: 0
     width: 529
     height: 441
-  m_MinSize: {x: 204, y: 221}
-  m_MaxSize: {x: 4004, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 15}
@@ -118,7 +118,7 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 997
-  m_MinSize: {x: 950, y: 542}
+  m_MinSize: {x: 950, y: 521}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &6
 MonoBehaviour:
@@ -182,10 +182,10 @@ MonoBehaviour:
     y: 30
     width: 1920
     height: 947
-  m_MinSize: {x: 438, y: 492}
-  m_MaxSize: {x: 18008, y: 14042}
+  m_MinSize: {x: 613, y: 471}
+  m_MaxSize: {x: 18008, y: 14021}
   vertical: 0
-  controlID: 107
+  controlID: 125
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -230,15 +230,15 @@ MonoBehaviour:
     y: 0
     width: 385
     height: 947
-  m_MinSize: {x: 102, y: 121}
+  m_MinSize: {x: 277, y: 71}
   m_MaxSize: {x: 4002, y: 4021}
-  m_ActualView: {fileID: 12}
+  m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
   - {fileID: 12}
   - {fileID: 18}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -270,9 +270,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -6.18529, y: -14.296254, z: 14.47126}
+    m_Target: {x: -5.326053, y: 6.0831623, z: 15.029177}
     speed: 2
-    m_Value: {x: -6.18529, y: -14.296254, z: 14.47126}
+    m_Value: {x: -5.326053, y: 6.0831623, z: 15.029177}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -300,13 +300,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: -0.38600174, y: 0.20193228, z: -0.087001376, w: -0.89591116}
+    m_Target: {x: 0.0058893897, y: -0.9515492, z: -0.018253328, w: -0.30689785}
     speed: 2
-    m_Value: {x: -0.38600174, y: 0.20193228, z: -0.087001376, w: -0.89591116}
+    m_Value: {x: 0.0058893897, y: -0.9515492, z: -0.018253328, w: -0.30689785}
   m_Size:
-    m_Target: 27.416002
+    m_Target: 27.249788
     speed: 2
-    m_Value: 27.416002
+    m_Value: 27.249788
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -507,10 +507,10 @@ MonoBehaviour:
     height: 420
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 8ce5fdff
+    scrollPos: {x: 0, y: 77}
+    m_SelectedIDs: 6c070000
     m_LastClickedID: 0
-    m_ExpandedIDs: a2e5fdff728afeffa06dffffa66dffffac6dffffb06dffffb66dffffbc6dffffc06dfffffa6dffff106effff266effffd0f0ffffd6f0ffffdaf0ffffdcf0ffffe2f0ffffe8f0ffffecf0fffff0f0fffff4f0fffffcf0ffff04f1ffff0af1ffff0cf1ffff0ef1ffff14f1ffff1ef1ffff20f1ffff22f1ffff24f1ffff26f1ffff28f1ffff2af1ffff2cf1ffff30f1ffff32f1ffff34f1ffff36f1ffff3af1ffff3cf1ffff3ef1ffff48f1ffff4af1ffff4cf1ffff4ef1ffff50f1ffff54f1ffff56f1ffff58f1ffff6ef1ffff00000000
+    m_ExpandedIDs: 7ef0ffff8cf0ffffa2f0ffffa6f0ffffb8f0ffff1ef1ffff2ef1ffff44f1ffff58f1ffff6ef1ffff00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -576,14 +576,14 @@ MonoBehaviour:
   m_StartGridSize: 64
   m_LastFolders: []
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: E:\Users\Casey\Documents\GitHub\ITCS-4236-Game\4236 Baseball
+  m_LastProjectPath: G:\Unity Projects\Baseball\ITCS-4236-Game\4236 Baseball
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: a00e0000
     m_LastClickedID: 3744
-    m_ExpandedIDs: 00000000b6300000cc3100002c320000b83200000e330000103600007636000090360000de390000e0390000e2390000e4390000e6390000e8390000
+    m_ExpandedIDs: 00000000b6300000cc3100002c320000b83200000e330000103600007636000090360000d8390000da390000dc390000de390000e0390000e2390000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -608,24 +608,24 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 1}
+    scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: ffffffff00000000b6300000cc3100002c320000b83200000e330000103600007636000090360000de390000e0390000e2390000e4390000e6390000e8390000
+    m_ExpandedIDs: ffffffff00000000b6300000cc3100002c320000b83200000e330000103600007636000090360000d8390000da390000dc390000de390000e0390000e2390000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: BaseballScript
+      m_OriginalName: BaseballScript
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 1900
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 2}
     m_SearchString: 
