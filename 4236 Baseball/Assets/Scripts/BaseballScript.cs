@@ -47,27 +47,28 @@ public class BaseballScript : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Bat"))
         {
-            print("Ball hit bat");
-            List<Vector3> positionList;
-            // ...
+             print("Ball hit bat");
+             List<Vector3> positionList;
+             // ...
 
-            positionList = new List<Vector3>();
+             positionList = new List<Vector3>();
 
-            int maxIterations = Mathf.RoundToInt(5.0f / Time.fixedDeltaTime);
-            Vector3 pos = ball.transform.position;
-            Vector3 vel = rb.velocity;
-            float drag = rb.drag;
-            positionList.Add(pos);
-            float elapsedTime = 0.0f;
+             int maxIterations = Mathf.RoundToInt(5.0f / Time.fixedDeltaTime);
+             Vector3 pos = ball.transform.position;
+             Vector3 vel = rb.velocity;
+             float drag = rb.drag;
+             positionList.Add(pos);
+             float elapsedTime = 0.0f;
 
-            for (int i = 0; i < maxIterations; i++)
-            {
-                vel = vel + (Physics.gravity * Time.fixedDeltaTime);
-                vel *= drag;
-                pos += vel * Time.fixedDeltaTime;
-                elapsedTime += Time.fixedDeltaTime;
-                positionList.Add(pos);
-            }
+             for (int i = 0; i < maxIterations; i++)
+             {
+                 vel = vel + (Physics.gravity * Time.fixedDeltaTime);
+                 vel *= drag;
+                 pos += vel * Time.fixedDeltaTime;
+                 elapsedTime += Time.fixedDeltaTime;
+                 positionList.Add(pos);
+             }
+           // relativePos *= -1;
         }
         else if (other.gameObject.name.Equals("Catcher"))
         {
