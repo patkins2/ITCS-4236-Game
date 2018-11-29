@@ -49,8 +49,9 @@ public class BaseballScript : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Bat"))
         {
-             print("Ball hit bat");
-
+            print("Ball hit bat");
+            this.GetComponent<Collider>().isTrigger = false;
+            rb.useGravity = true;
 
              relativePos = target.transform.position - ball.transform.position;
              rb.AddForce(relativePos.normalized * throwForce * 2);
