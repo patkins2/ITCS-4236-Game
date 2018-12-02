@@ -10,12 +10,15 @@ public class BaseballScript : MonoBehaviour {
     [SerializeField] private GameObject ball;
     [SerializeField] private GameObject strikeZone;
     [SerializeField] private float throwForce = 3500f;      //How hard the ball is thrown
+    
 
     private Rigidbody rb;
     private Collision collision;
     private Vector3 relativePos;
     private Quaternion rotation;
     private GameObject target;
+    public float passVelocity;
+    //public Transform trans;
 
 
 
@@ -42,10 +45,6 @@ public class BaseballScript : MonoBehaviour {
         ball.transform.rotation = rotation;
         rb.AddForce(relativePos.normalized * throwForce);
 
-        /*if(collision.gameObject.name == "bat")
-        {
-
-        }*/
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -54,44 +53,36 @@ public class BaseballScript : MonoBehaviour {
             print("Ball hit bat");
 
             //Random rnd = new Random();
-            int targetNum = Random.Range(1, 10); //random number between 1 and 9
+            int targetNum = Random.Range(1, 8); //random number between 1 and 9
 
             //based on the random number, assign where the ball will go. 
             switch (targetNum)
             {
                 case 1:
-                    target = GameObject.Find("Target1");
-                    break;
-
-                case 2:
                     target = GameObject.Find("Target2");
                     break;
 
-                case 3:
+                case 2:
                     target = GameObject.Find("Target3");
                     break;
 
-                case 4:
+                case 3:
                     target = GameObject.Find("Target4");
                     break;
 
-                case 5:
+                case 4:
                     target = GameObject.Find("Target5");
                     break;
 
-                case 6:
-                    target = GameObject.Find("Target6");
-                    break;
-
-                case 7:
+                case 5:
                     target = GameObject.Find("Target7");
                     break;
 
-                case 8:
+                case 6:
                     target = GameObject.Find("Target8");
                     break;
 
-                case 9:
+                case 7:
                     target = GameObject.Find("Target9");
                     break;
 
@@ -103,29 +94,17 @@ public class BaseballScript : MonoBehaviour {
             this.GetComponent<Collider>().isTrigger = false;
             rb.useGravity = true;
 
-             relativePos = target.transform.position - ball.transform.position;
-             rb.AddForce(relativePos.normalized * throwForce * 2); // need to look into ballistic velocity
-            /*List<Vector3> positionList;
-            // ...
+            //relativePos = target.transform.position - ball.transform.position;
+            //rb.AddForce(relativePos.normalized * throwForce * 2); 
+            
+            // need to look into ballistic velocity
 
-            positionList = new List<Vector3>();
+            SetVelocity(BallisticVel(target.transform.position, 15f));
+            
 
-            int maxIterations = Mathf.RoundToInt(5.0f / Time.fixedDeltaTime);
-            relativePos = ball.transform.position;
-            Vector3 vel = rb.velocity;
-            float drag = rb.drag;
-            positionList.Add(relativePos);
-            float elapsedTime = 0.0f;
 
-            for (int i = 0; i < maxIterations; i++)
-            {
-                vel = vel + (Physics.gravity * Time.fixedDeltaTime);
-                vel *= drag;
-               relativePos += vel * Time.fixedDeltaTime * -1;
-                elapsedTime += Time.fixedDeltaTime;
-                positionList.Add(relativePos);
-            }*/
-            // relativePos *= -1;
+
+
         }
         else if (other.gameObject.name.Equals("Catcher"))
         {
@@ -134,5 +113,28 @@ public class BaseballScript : MonoBehaviour {
         }
         //else
             //print("Ball hit: " + other.gameObject.name);
+    }
+
+
+    Vector3 BallisticVel(Vector3 target, float angle)
+    {
+        Vector3 elevatedTarget = new Vector3(target.x, 1f, target.z);
+        Vector3 dir = elevatedTarget - ball.transform.position;  // get target direction
+        float h = dir.y;  // get height difference
+        dir.y = 0;  // retain only the horizontal direction
+        float dist = dir.magnitude;  // get horizontal distance
+        float a = angle * Mathf.Deg2Rad;  // convert angle to radians
+        dir.y = dist * Mathf.Tan(a);  // set dir to the elevation angle
+        dist += h / Mathf.Tan(a);  // correct for small height differences
+                                   // calculate the velocity magnitude
+        passVelocity = Mathf.Sqrt(dist * Physics.gravity.magnitude / Mathf.Sin(2 * a));
+        Vector3 normVel = passVelocity * dir.normalized;
+        
+        return normVel;
+    }
+
+    public void SetVelocity(Vector3 v)
+    {
+        rb.velocity = v;
     }
 }
