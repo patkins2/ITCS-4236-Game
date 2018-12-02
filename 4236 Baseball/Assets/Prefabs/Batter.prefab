@@ -424,7 +424,7 @@ GameObject:
   - component: {fileID: 114354719065110156}
   m_Layer: 0
   m_Name: Batter
-  m_TagString: Untagged
+  m_TagString: Batter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2250,14 +2250,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myPosition: 12
+  ballHit: 0
   batter: {fileID: 1371912851445118}
   pitcher: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1, type: 2}
-  minSpeed: 0
-  maxSpeed: 0
-  minPower: 0
-  maxPower: 0
-  runSpeed: 0
-  swingPower: 0
+  currentPlayer: {fileID: 0}
 --- !u!114 &114949222799715240
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2269,8 +2265,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 030339ce603c37f44849c7579ba4c4dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  batter: {fileID: 0}
   currentPlayer: {fileID: 1371912851445118}
   leftHand: {fileID: 1727000854285836}
+  hit: 0
 --- !u!136 &136076547993259674
 CapsuleCollider:
   m_ObjectHideFlags: 1

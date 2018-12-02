@@ -5,12 +5,9 @@ using UnityEngine;
 
 public class BaseballScript : MonoBehaviour {
 
-    [SerializeField] private GameObject currentPlayer;
-    [SerializeField] private GameObject rightHand;
+    [SerializeField] public GameObject rightHand;
     [SerializeField] private GameObject ball;
-    [SerializeField] private GameObject strikeZone;
     [SerializeField] private float throwForce = 3500f;      //How hard the ball is thrown
-    
 
     private Rigidbody rb;
     private Collision collision;
@@ -20,41 +17,51 @@ public class BaseballScript : MonoBehaviour {
     public float passVelocity;
     //public Transform trans;
 
+    public bool held = false;
+    public GameObject catcher;
 
 
     // Use this for initialization
     void Start () {
         ball.transform.parent = rightHand.transform;
-        rb = ball.GetComponent<Rigidbody>();
-        rb.detectCollisions = false;
-        rb.useGravity = false;
-        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        rb = GetComponent<Rigidbody>();
+        BallInHand();
 	}
 
     //Called from pitcher animator, releases ball from pitcher's hand and launches towards the batter
-    public void ReleaseBall()
+    public void ReleaseBall(GameObject throwDestination)
     {
-        print("ball going");
+        //print("ball thrown");
         rb.detectCollisions = true;
         rb.constraints = RigidbodyConstraints.None;
         ball.transform.parent = null;
 
-        relativePos = strikeZone.transform.position - ball.transform.position;
+        relativePos = throwDestination.transform.position - ball.transform.position;
+        //if throwing to player, throw up 1 unit (otherwise ball is throw to their feet)
+        if (throwDestination != GameManager.self.strikeZone)
+        {
+            relativePos = new Vector3(relativePos.x, relativePos.y + 1, relativePos.z);
+        }
         //rb.useGravity = true;
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         ball.transform.rotation = rotation;
         rb.AddForce(relativePos.normalized * throwForce);
+        StartCoroutine(BallNotHeld());
+    }
 
+    private IEnumerator BallNotHeld() {
+        yield return new WaitForSeconds(0.1f);
+        held = false;
     }
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Bat"))
         {
-            print("Ball hit bat");
-
+            
+            //Ball is randomly hit towards one of the invisible targets on the field
             //Random rnd = new Random();
             int targetNum = Random.Range(1, 8); //random number between 1 and 9
-
+            
             //based on the random number, assign where the ball will go. 
             switch (targetNum)
             {
@@ -90,29 +97,12 @@ public class BaseballScript : MonoBehaviour {
                     break;
             }
 
-
             this.GetComponent<Collider>().isTrigger = false;
             rb.useGravity = true;
-
-            //relativePos = target.transform.position - ball.transform.position;
-            //rb.AddForce(relativePos.normalized * throwForce * 2); 
-            
+            //print("Going to " + target.name);
             // need to look into ballistic velocity
-
             SetVelocity(BallisticVel(target.transform.position, 15f));
-            
-
-
-
-
         }
-        else if (other.gameObject.name.Equals("Catcher"))
-        {
-            //Add code to return ball to pitcher
-            
-        }
-        //else
-            //print("Ball hit: " + other.gameObject.name);
     }
 
 
@@ -136,5 +126,17 @@ public class BaseballScript : MonoBehaviour {
     public void SetVelocity(Vector3 v)
     {
         rb.velocity = v;
+    }
+
+    public void BallInHand() {
+        rb.velocity = Vector3.zero;
+        transform.position = rightHand.transform.position;
+        transform.parent = rightHand.transform;
+        rb = ball.GetComponent<Rigidbody>();
+        rb.detectCollisions = false;
+        rb.constraints = RigidbodyConstraints.None;
+        rb.useGravity = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        held = true;
     }
 }

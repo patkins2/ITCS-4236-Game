@@ -26,13 +26,20 @@ public class GameManager : MonoBehaviour {
     private GameObject team1, team2;
     [SerializeField] public Transform fieldPositions { get; private set; }
     public Transform battingPositions { get; private set; }
+    public GameObject baseball { get; set; }
+
+    public GameObject strikeZone { get; private set; }
+
+    //Increment when each team makes its last player
+    //Used to know when the game can begin
+    public int numTeamsCreated = 0;
 
     public enum GameStates
     {
-        Pregame, Prepitch, Pitching, BallPitched,
+        Pregame, ReadyToPitch, Pitching, BallPitched,
         ResetBall, BallInPlay
     }
-    public GameStates currentGameState;
+    public GameStates currentGameState = GameStates.Pregame;
 
     // Use this for initialization
     void Start () {
@@ -44,5 +51,15 @@ public class GameManager : MonoBehaviour {
         //Keeps parent Transform of all the batting and fielding positions
         battingPositions = GameObject.Find("Batting Positions").transform;
         fieldPositions = GameObject.Find("Fielding Positions").transform;
+
+        strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
+    }
+
+    public void TeamFinishedSpawning() {
+        numTeamsCreated++;
+        if (numTeamsCreated >= 2)
+        {
+            currentGameState = GameStates.ReadyToPitch;
+        }
     }
 }

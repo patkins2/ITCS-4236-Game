@@ -1118,7 +1118,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1837095421482666}
   m_LocalRotation: {x: -0.0016162076, y: 0.1040568, z: 0.0023863416, w: 0.9945672}
-  m_LocalPosition: {x: 4.9658136, y: -0.9642537, z: 11.430112}
+  m_LocalPosition: {x: -0.20446667, y: -1.0137472, z: 1.6847153}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4746149904913830}
@@ -2158,14 +2158,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d5d3571ffcd0e438dbd59c89ee58a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeed: 0
-  maxSpeed: 0
-  minPower: 0
-  maxPower: 0
-  runSpeed: 0
-  swingPower: 0
+  myPosition: 12
+  ballHit: 0
   batter: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433, type: 2}
   pitcher: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1, type: 2}
+  currentPlayer: {fileID: 0}
+  throwingHand: {fileID: 1582524522748332}
 --- !u!136 &136073850283366268
 CapsuleCollider:
   m_ObjectHideFlags: 1

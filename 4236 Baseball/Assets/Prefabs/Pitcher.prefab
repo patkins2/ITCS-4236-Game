@@ -818,6 +818,7 @@ GameObject:
   - component: {fileID: 54005589908471554}
   - component: {fileID: 95864860410504472}
   - component: {fileID: 114329123161146900}
+  - component: {fileID: 65277340698845980}
   m_Layer: 0
   m_Name: Pitcher
   m_TagString: Untagged
@@ -2167,6 +2168,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 14
   m_CollisionDetection: 2
+--- !u!65 &65277340698845980
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1713238749872558}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.7, y: 2, z: 0.5}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!65 &65284145332949888
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -2220,12 +2233,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f427b885fb33c6d45a22b4b9d2d9f5c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPlayer: {fileID: 1713238749872558}
   rightHand: {fileID: 1241216592187120}
   ball: {fileID: 1822863044695666}
-  strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd, type: 2}
-  target: {fileID: 1829871630085590, guid: 5a9823cce491f5a49b3a6532d3de0394, type: 2}
   throwForce: 5000
+  passVelocity: 0
+  catcher: {fileID: 0}
 --- !u!114 &114329123161146900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2238,14 +2250,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myPosition: 12
+  ballHit: 0
   batter: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433, type: 2}
   pitcher: {fileID: 1713238749872558}
-  minSpeed: 0
-  maxSpeed: 0
-  minPower: 0
-  maxPower: 0
-  runSpeed: 0
-  swingPower: 0
+  currentPlayer: {fileID: 0}
+  throwingHand: {fileID: 1241216592187120}
+  catcherCollider: {fileID: 0}
 --- !u!135 &135721877231762602
 SphereCollider:
   m_ObjectHideFlags: 1

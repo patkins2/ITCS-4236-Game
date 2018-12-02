@@ -57,8 +57,19 @@ MonoBehaviour:
     type: 2}
   pitcherPrefab: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1,
     type: 2}
+  catcherPrefab: {fileID: 1837095421482666, guid: c1c6409e61a29184485f5a01400280ea,
+    type: 2}
   otherTeam: {fileID: 0}
   baseballBat: {fileID: 1838767353899028, guid: dfa437938e5b73f46baaf326c46ad1d9,
     type: 2}
-  strikeZone: {fileID: 1065719676826568, guid: c794db2faaf696149bc7bcc2387840bd, type: 2}
+  playersOnTeam:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   role: 0

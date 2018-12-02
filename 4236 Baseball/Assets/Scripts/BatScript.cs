@@ -38,13 +38,14 @@ public class BatScript : MonoBehaviour {
         if (other.gameObject.CompareTag("Ball"))
         {
             TellBatterBallHit();
-            print("triggered by ball");
+            //print("triggered by ball");
             ReleaseBat();
             //tell camera to go to overhead view
         }
     }
 
     private void TellBatterBallHit() {
+        GameManager.self.currentGameState = GameManager.GameStates.BallInPlay;
         batter.ballHit = true;
     }
 }

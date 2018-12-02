@@ -22,15 +22,19 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField] private GameObject batter;
     [SerializeField] private GameObject pitcher;
+    [SerializeField] private GameObject currentPlayer;
+    [SerializeField] private GameObject throwingHand;
+    [SerializeField] private Collider catcherCollider;
 
     private Animator anim;
     private Transform trans;
-    private GameObject currentPlayer;
+    
     private GameObject strikeZone;
     private GameObject firstBase;
     private GameObject secondBase;
     private GameObject thirdBase;
     private GameObject baseball;
+    
     private GameObject bat;
 
     private TeamManager myTeamManager;
@@ -50,6 +54,7 @@ public class PlayerController : MonoBehaviour {
         if (!myTeamManager)
             Debug.LogError("No manager");
 
+        //Get position of each base
         foreach(Transform position in GameManager.self.fieldPositions)
         {
             if(position.name.Equals("First Base"))
@@ -60,16 +65,30 @@ public class PlayerController : MonoBehaviour {
                 thirdBase = position.gameObject; 
         }
 
+        /*
+        //give each fielding player access to their throwing hand
+        //handled in inspector
+        if (myTeamManager.role == TeamManager.TeamRole.FIELDING)
+        {
+            foreach(Transform component in currentPlayer.transform)
+            {
+                if (component.name.Equals("mixamorig:RightHand"))
+                    throwingHand = component.gameObject;
+            }
+        }
+        */
+
         strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
+        batter = GameObject.FindGameObjectWithTag("Batter");
 
         //Make all players face the batter, except the batter who faces the pitcher
         Vector3 relativePos;
         Quaternion rotation;
-
-        if (currentPlayer.name.Equals("Batting"))
+        if (currentPlayer.name.Equals("Batting") || currentPlayer.name.Equals("Catcher"))
         {
             relativePos = pitcher.transform.position - trans.position;  //direction: batter -> pitcher
-        }else if (currentPlayer.name.Equals("Pitcher"))
+        }
+        else if (currentPlayer.name.Equals("Pitcher"))
         {
             relativePos = strikeZone.transform.position - trans.position;
             rotation = Quaternion.LookRotation(relativePos, Vector3.up);
@@ -86,6 +105,12 @@ public class PlayerController : MonoBehaviour {
                 Debug.LogError(name + " viewing self");
         }
        
+        //Tell ball this is the catcher
+        if (currentPlayer.name.Equals("Catcher"))
+        {
+            GameManager.self.baseball.GetComponent<BaseballScript>().catcher = currentPlayer;
+        }
+
         //Set players' animations based on their position
         if (currentPlayer.name.Equals("Pitcher"))   //if this player is the pitcher, find the baseball child component and store a reference to its GameObject
         {
@@ -95,8 +120,13 @@ public class PlayerController : MonoBehaviour {
                 if (component.name.Equals("Baseball"))
                 {
                     baseball = component.gameObject;
+                    GameManager.self.baseball = baseball;
                 }
             }
+        }
+        else if (currentPlayer.name.Equals("Catcher"))
+        {
+            anim.Play("Catcher Idle");
         }
         else if (currentPlayer.name.Equals("Batting"))  //if this player is the batter, find the baseball bat child component and store a reference to its GameObject
         {
@@ -139,14 +169,14 @@ public class PlayerController : MonoBehaviour {
         {
             anim.SetBool("Run", true);
             runToBase();
-            print("Batter hit ball");  
+            //print("Batter hit ball");  
         }
 	}
 
     public void pitch()
     {
-        baseball.GetComponent <BaseballScript> ().ReleaseBall();
-        anim.ResetTrigger("Pitch");
+        GameManager.self.baseball.GetComponent<BaseballScript>().ReleaseBall(GameManager.self.strikeZone);
+        GameManager.self.currentGameState = GameManager.GameStates.BallPitched;
     }
 
     public void hit()
@@ -157,7 +187,7 @@ public class PlayerController : MonoBehaviour {
 
     private void runToBase()
     {
-        //Find which base to run to
+        //Find which base to run to based on which bases have already been reached
         Vector3 basePosition;
         float step = 5f * Time.deltaTime;
         if (!firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
@@ -177,11 +207,10 @@ public class PlayerController : MonoBehaviour {
         {
             //Turn to face destination base
             Quaternion rotation = Quaternion.LookRotation(basePosition);
-            print("Moving towards " + basePosition);
-            print("Turning towards " + rotation.eulerAngles);
             trans.position = Vector3.MoveTowards(trans.position, basePosition, step);
+            //Turns instantly towards next base, finding correct rotation to turn smoothly gave wrong direction
             trans.LookAt(basePosition);
-            //trans.rotation = rotation;//Quaternion.RotateTowards(trans.rotation, rotation, Time.deltaTime * 100f);
+            //trans.rotation = Quaternion.RotateTowards(trans.rotation, rotation, Time.deltaTime * 100f);
         }
         //Close enough to base to stop running OR go to next base
         else
@@ -195,6 +224,70 @@ public class PlayerController : MonoBehaviour {
         }
             
     }
-    
-   
+
+    public void CatchBall() {
+        //if (catcherCollider)
+           //catcherCollider.enabled = false;
+
+        anim.SetTrigger("Catch");
+        StartCoroutine(ParentBallToHand());
+    }
+
+    private IEnumerator ParentBallToHand() {
+        float waitTime = 0.3f;
+        //print(name + " has the ball");
+        //Index 1 for the fielding teams' players is the catcher
+        // TODO check if game state is pitching, (if ball is in play, don't throw to pitcher)
+        if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer == myTeamManager.playersOnTeam[1])
+        {
+            //If catcher has the ball, state is returning ball to pitcher and wait slightly longer to throw
+            GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
+            waitTime = 0.7f;
+            //print("reset ball and waiting");
+        }
+        
+        //GameManager.self.baseball.transform.parent = throwingHand.transform;
+        GameManager.self.baseball.GetComponent<BaseballScript>().rightHand = throwingHand;
+        GameManager.self.baseball.GetComponent<BaseballScript>().BallInHand();
+
+        yield return new WaitForSeconds(waitTime);
+        //print("wait time up, throwing");
+        anim.SetTrigger("Throw");
+    }
+
+    private void ThrowToPitcher() {
+        //print("throwing to pitcher");
+        GameManager.self.baseball.GetComponent<BaseballScript>().ReleaseBall(myTeamManager.playersOnTeam[0]);
+    }
+
+    private void PitchWhenReady() {
+        if (GameManager.self.currentGameState == GameManager.GameStates.ReadyToPitch)
+        {
+            anim.SetTrigger("Pitch");
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject == GameManager.self.baseball)
+        {
+            if (!myTeamManager)
+                return;
+
+            if (myTeamManager.role == TeamManager.TeamRole.FIELDING && !GameManager.self.baseball.GetComponent<BaseballScript>().held)
+            {
+                //If pitcher catches ball set new game state
+                if (currentPlayer == myTeamManager.playersOnTeam[0])
+                    GameManager.self.currentGameState = GameManager.GameStates.ReadyToPitch;
+
+                if (currentPlayer == myTeamManager.playersOnTeam[1])
+                    GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
+
+                GameManager.self.baseball.GetComponent<BaseballScript>().rightHand = throwingHand;
+                GameManager.self.baseball.GetComponent<BaseballScript>().BallInHand();
+                CatchBall();
+            }
+            
+        }
+    }
+
 }

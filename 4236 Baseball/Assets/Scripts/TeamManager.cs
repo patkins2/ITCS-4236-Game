@@ -22,11 +22,12 @@ public class TeamManager : MonoBehaviour {
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject batterPrefab;
     [SerializeField] private GameObject pitcherPrefab;
+    [SerializeField] private GameObject catcherPrefab;
     [SerializeField] private TeamManager otherTeam;
     [SerializeField] private GameObject baseballBat;
-    
+
     private const int maxPlayers = 9;
-    [SerializeField] private GameObject[] playersOnTeam = new GameObject[maxPlayers];
+    [SerializeField] public GameObject[] playersOnTeam = new GameObject[maxPlayers];
 	[HideInInspector] public enum TeamRole {FIELDING, BATTING};
     public TeamRole role;
 
@@ -89,7 +90,7 @@ public class TeamManager : MonoBehaviour {
                         
                     }
                     else if (position.name.Equals("Catcher")) {
-                        newPlayer = CreatePlayer(playerPrefab, position.name);
+                        newPlayer = CreatePlayer(catcherPrefab, position.name);
                     }
                     else if (position.name.Equals("First Base")) {
                         newPlayer = CreatePlayer(playerPrefab, position.name);
@@ -126,6 +127,10 @@ public class TeamManager : MonoBehaviour {
                     }
                     break;
                 }
+            }
+            if (i == playersOnTeam.Length - 1)
+            {
+                GameManager.self.TeamFinishedSpawning();
             }
         }
     }
@@ -168,6 +173,10 @@ public class TeamManager : MonoBehaviour {
                     }
                     break;
                 }
+            }
+            if (i == playersOnTeam.Length - 1)
+            {
+                GameManager.self.TeamFinishedSpawning();
             }
         }
     }
