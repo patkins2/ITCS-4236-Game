@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class BatScript : MonoBehaviour {
 
+    [HideInInspector] public PlayerController batter;
+
     [SerializeField] private GameObject currentPlayer;
     [SerializeField] private GameObject leftHand;
     private Rigidbody rb;
     //[SerializeField] private GameObject bat;
     private GameObject bat;
+    public bool hit = false;
 
     // Use this for initialization
     void Start () {
@@ -30,24 +33,18 @@ public class BatScript : MonoBehaviour {
         bat.transform.rotation = leftHand.transform.rotation;
         rb.AddForce(bat.transform.forward * 500);
     }
-    /*
-    private void OnCollisionEnter(Collision collision) {
-        print("Collided with: " + collision.gameObject.name);
-        if (collision.gameObject.CompareTag("Ball"))
-        {
-            print("hit ball");
-        }
-    }
-    private void OnCollisionStay(Collision collision) {
-        print(collision.gameObject.name + " is inside bat collider space");
-    }
-    */
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Ball"))
+        {
+            TellBatterBallHit();
             print("triggered by ball");
+            ReleaseBat();
             //tell camera to go to overhead view
+        }
     }
 
-    
+    private void TellBatterBallHit() {
+        batter.ballHit = true;
+    }
 }

@@ -24,8 +24,15 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField] private GameObject teamMngrPrefab;
     private GameObject team1, team2;
-    public Transform fieldPositions { get; private set; }
+    [SerializeField] public Transform fieldPositions { get; private set; }
     public Transform battingPositions { get; private set; }
+
+    public enum GameStates
+    {
+        Pregame, Prepitch, Pitching, BallPitched,
+        ResetBall, BallInPlay
+    }
+    public GameStates currentGameState;
 
     // Use this for initialization
     void Start () {

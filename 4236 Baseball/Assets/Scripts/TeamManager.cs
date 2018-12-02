@@ -24,9 +24,9 @@ public class TeamManager : MonoBehaviour {
     [SerializeField] private GameObject pitcherPrefab;
     [SerializeField] private TeamManager otherTeam;
     [SerializeField] private GameObject baseballBat;
-    [SerializeField] private GameObject strikeZone;
-
-    private int maxPlayers = 9;
+    
+    private const int maxPlayers = 9;
+    [SerializeField] private GameObject[] playersOnTeam = new GameObject[maxPlayers];
 	[HideInInspector] public enum TeamRole {FIELDING, BATTING};
     public TeamRole role;
 
@@ -36,9 +36,6 @@ public class TeamManager : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-
-        Instantiate(strikeZone, new Vector3(0.04f, 0.06f, 0.11f), Quaternion.identity);
-
         //Set each team to recognize the other team
         TeamManager[] teams = FindObjectsOfType<TeamManager>();
         otherTeam = name.Equals(teams[0].gameObject.name) ? teams[1] : teams[0];
@@ -89,6 +86,7 @@ public class TeamManager : MonoBehaviour {
 
                     if (position.name.Equals("Pitcher")) {
                         newPlayer = CreatePlayer(pitcherPrefab, position.name);
+                        
                     }
                     else if (position.name.Equals("Catcher")) {
                         newPlayer = CreatePlayer(playerPrefab, position.name);
@@ -118,10 +116,14 @@ public class TeamManager : MonoBehaviour {
                         Debug.LogError("Fielding Position called \"" + position.name + "\" not found");
                     }
 
-                    position.positionOccupied = true;
+                    
                     //if new player was created, move them to their playing position
                     if (newPlayer)
+                    {
+                        position.positionOccupied = true;
+                        playersOnTeam[i] = newPlayer;
                         newPlayer.transform.position = position.transform.position;
+                    }
                     break;
                 }
             }
@@ -157,10 +159,13 @@ public class TeamManager : MonoBehaviour {
                         Debug.LogError("Batting position called \"" + position.name + "\" not found");
                     }
 
-                    position.positionOccupied = true;
                     //if new player was created, move them to their playing position
                     if (newPlayer)
+                    {
+                        position.positionOccupied = true;
+                        playersOnTeam[i] = newPlayer;
                         newPlayer.transform.position = position.transform.position;
+                    }
                     break;
                 }
             }

@@ -9,7 +9,7 @@ public class BaseballScript : MonoBehaviour {
     [SerializeField] private GameObject rightHand;
     [SerializeField] private GameObject ball;
     [SerializeField] private GameObject strikeZone;
-    [SerializeField] private float throwForce = 5000f;      //How hard the ball is thrown
+    [SerializeField] private float throwForce = 3500f;      //How hard the ball is thrown
 
     private Rigidbody rb;
     private Collision collision;
@@ -31,6 +31,7 @@ public class BaseballScript : MonoBehaviour {
     //Called from pitcher animator, releases ball from pitcher's hand and launches towards the batter
     public void ReleaseBall()
     {
+        print("ball going");
         rb.detectCollisions = true;
         rb.constraints = RigidbodyConstraints.None;
         ball.transform.parent = null;

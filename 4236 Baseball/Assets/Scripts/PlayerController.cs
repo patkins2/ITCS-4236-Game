@@ -17,58 +17,50 @@ public class PlayerController : MonoBehaviour {
     }
     public Position myPosition = Position.INVALID;  //default before position is set
 
+
+    public bool ballHit = false;
+
     [SerializeField] private GameObject batter;
     [SerializeField] private GameObject pitcher;
-    private GameObject strikeZone;
-
-    [SerializeField] private float minSpeed, maxSpeed, minPower, maxPower;
-    [SerializeField] private float runSpeed, swingPower;
 
     private Animator anim;
     private Transform trans;
     private GameObject currentPlayer;
+    private GameObject strikeZone;
     private GameObject firstBase;
     private GameObject secondBase;
     private GameObject thirdBase;
     private GameObject baseball;
     private GameObject bat;
 
-    private bool running = false;
+    private TeamManager myTeamManager;
+    
     private bool firstBaseVisited = false;
     private bool secondBaseVisited = false;
     private bool thirdBaseVisited = false;
-    private float radiusOfSatisfaction = 1f;     //distance to destination when they can stop the running animation and start slowing down
+    private float radiusOfSatisfaction = 1.25f;     //distance to destination when they can stop the running animation and start slowing down
 	
     // Use this for initialization
 	void Start () {
-        strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
         currentPlayer = this.gameObject;
-        //trans = currentPlayer.transform;
         trans = transform;
-        firstBaseVisited = secondBaseVisited = thirdBaseVisited = false;
-        runSpeed = Random.Range(minSpeed, maxSpeed);
-        swingPower = Random.Range(minPower, maxPower);
         anim = GetComponent<Animator>();
 
-        Transform[] fieldingPositions = GameObject.Find("Stadium").GetComponentsInChildren<Transform>();
-        foreach(Transform position in fieldingPositions)
+        myTeamManager = transform.parent.GetComponent<TeamManager>();
+        if (!myTeamManager)
+            Debug.LogError("No manager");
+
+        foreach(Transform position in GameManager.self.fieldPositions)
         {
             if(position.name.Equals("First Base"))
-            {
-                //print("Found first base");
                 firstBase = position.gameObject;
-            }
             else if(position.name.Equals("Second Base"))
-            {
-                //print("Found second base");
                 secondBase = position.gameObject;   
-            }
             else if(position.name.Equals("Third Base"))
-            {
-                //print("Found third base");
                 thirdBase = position.gameObject; 
-            }
         }
+
+        strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
 
         //Make all players face the batter, except the batter who faces the pitcher
         Vector3 relativePos;
@@ -82,17 +74,19 @@ public class PlayerController : MonoBehaviour {
             relativePos = strikeZone.transform.position - trans.position;
             rotation = Quaternion.LookRotation(relativePos, Vector3.up);
             trans.rotation = rotation;
+            
         }
         else
         {
             relativePos = batter.transform.position - trans.position;   //direction: this player -> batter
             rotation = Quaternion.LookRotation(relativePos, Vector3.up);
             trans.rotation = rotation;
+
+            if (trans.rotation.eulerAngles == Vector3.zero)
+                Debug.LogError(name + " viewing self");
         }
-        //Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-        //trans.rotation = rotation;
        
-        
+        //Set players' animations based on their position
         if (currentPlayer.name.Equals("Pitcher"))   //if this player is the pitcher, find the baseball child component and store a reference to its GameObject
         {
             Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
@@ -112,6 +106,7 @@ public class PlayerController : MonoBehaviour {
                 if (component.name.Equals("Bat"))
                 {
                     bat = component.gameObject;
+                    bat.GetComponent<BatScript>().batter = currentPlayer.GetComponent<PlayerController>();
                 }
             }
             anim.Play("Baseball Idle");
@@ -140,9 +135,11 @@ public class PlayerController : MonoBehaviour {
             }
         }
         
-        if (running)
+        if (ballHit)
         {
+            anim.SetBool("Run", true);
             runToBase();
+            print("Batter hit ball");  
         }
 	}
 
@@ -150,7 +147,7 @@ public class PlayerController : MonoBehaviour {
     {
         baseball.GetComponent <BaseballScript> ().ReleaseBall();
         anim.ResetTrigger("Pitch");
-            }
+    }
 
     public void hit()
     {
@@ -158,53 +155,45 @@ public class PlayerController : MonoBehaviour {
         anim.ResetTrigger("Swing");
     }
 
-    public void run()
-    {
-        anim.SetTrigger("Run");
-        running = true;
-    }
-
     private void runToBase()
     {
-        Quaternion baseRotation;
+        //Find which base to run to
         Vector3 basePosition;
         float step = 5f * Time.deltaTime;
         if (!firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
-        {
-            //Debug.Log("Running to first");
-            baseRotation = firstBase.transform.rotation;
             basePosition = firstBase.transform.position;
-            
-        }else if(firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
-        {
-            //Debug.Log("Running to second");
-            baseRotation = secondBase.transform.rotation;
+        else if (firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
             basePosition = secondBase.transform.position;
-        }else if(firstBaseVisited && secondBaseVisited && !thirdBaseVisited)
-        {
-            //Debug.Log("Running to third");
-            baseRotation = thirdBase.transform.rotation;
+        else if (firstBaseVisited && secondBaseVisited && !thirdBaseVisited)
             basePosition = thirdBase.transform.position;
-        }
         else
         {
-            baseRotation = new Quaternion();
             basePosition = Vector3.zero;
+            Debug.LogError("I don't know where I've been or where to go next");
         }
-        
-        if((basePosition - trans.position).magnitude > radiusOfSatisfaction)
+
+        //If runner is far from base
+        if ((basePosition - trans.position).magnitude > radiusOfSatisfaction)
         {
-            running = true;
-            Quaternion rotation = Quaternion.LookRotation(basePosition.normalized);
+            //Turn to face destination base
+            Quaternion rotation = Quaternion.LookRotation(basePosition);
+            print("Moving towards " + basePosition);
+            print("Turning towards " + rotation.eulerAngles);
             trans.position = Vector3.MoveTowards(trans.position, basePosition, step);
-            trans.rotation = Quaternion.Lerp(trans.rotation, rotation, Time.deltaTime * 10f);
+            trans.LookAt(basePosition);
+            //trans.rotation = rotation;//Quaternion.RotateTowards(trans.rotation, rotation, Time.deltaTime * 100f);
         }
+        //Close enough to base to stop running OR go to next base
         else
         {
-            anim.SetTrigger("No Run");
-            anim.ResetTrigger("Run");
-            running = false;
-        }   
+            if (basePosition == firstBase.transform.position)
+                firstBaseVisited = true;
+            else if (basePosition == secondBase.transform.position)
+                secondBaseVisited = true;
+            else if (basePosition == thirdBase.transform.position)
+                thirdBaseVisited = true;
+        }
+            
     }
     
    
