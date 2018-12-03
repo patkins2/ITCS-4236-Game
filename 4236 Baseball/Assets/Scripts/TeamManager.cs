@@ -23,7 +23,7 @@ public class TeamManager : MonoBehaviour {
     [SerializeField] private GameObject batterPrefab;
     [SerializeField] private GameObject pitcherPrefab;
     [SerializeField] private GameObject catcherPrefab;
-    [SerializeField] private TeamManager otherTeam;
+    [SerializeField] public TeamManager otherTeam;
     [SerializeField] private GameObject baseballBat;
 
     private const int maxPlayers = 9;

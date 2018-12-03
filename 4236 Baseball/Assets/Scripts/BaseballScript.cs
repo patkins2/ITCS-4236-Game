@@ -6,15 +6,16 @@ using UnityEngine;
 public class BaseballScript : MonoBehaviour {
 
     [SerializeField] public GameObject rightHand;
-    [SerializeField] private GameObject ball;
+    [SerializeField] public GameObject ball;
     [SerializeField] private float throwForce = 3500f;      //How hard the ball is thrown
 
     private Rigidbody rb;
     private Collision collision;
     private Vector3 relativePos;
     private Quaternion rotation;
-    private GameObject target;
+    public GameObject target;
     public float passVelocity;
+    public int targetNum = 0;
     //public Transform trans;
 
     public bool held = false;
@@ -54,13 +55,13 @@ public class BaseballScript : MonoBehaviour {
         held = false;
     }
 
-    private void OnTriggerEnter(Collider other) {
+    public void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Bat"))
         {
             
             //Ball is randomly hit towards one of the invisible targets on the field
             //Random rnd = new Random();
-            int targetNum = Random.Range(1, 8); //random number between 1 and 9
+            targetNum = Random.Range(1, 8); //random number between 1 and 9
             
             //based on the random number, assign where the ball will go. 
             switch (targetNum)

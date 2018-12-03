@@ -28,7 +28,8 @@ public class PlayerController : MonoBehaviour {
 
     private Animator anim;
     private Transform trans;
-    
+    private Rigidbody rb;
+
     private GameObject strikeZone;
     private GameObject firstBase;
     private GameObject secondBase;
@@ -170,7 +171,12 @@ public class PlayerController : MonoBehaviour {
             anim.SetBool("Run", true);
             runToBase();
             //print("Batter hit ball");  
+           
+            RunToBall();
+           
         }
+
+        //RunToBall();
 	}
 
     public void pitch()
@@ -288,6 +294,56 @@ public class PlayerController : MonoBehaviour {
             }
             
         }
+    }
+
+
+    private void RunToBall()
+    {
+        float shortestDist = 10000f;
+
+        int savedIndex = 0;
+
+        for (int x = 0; x < ((myTeamManager.otherTeam.playersOnTeam.Length) - 1); x++)
+        {
+            GameObject position = myTeamManager.otherTeam.playersOnTeam[x];
+            float distanceCheck = Vector3.Distance((GameManager.self.baseball.GetComponent<BaseballScript>().target.transform.position),
+            position.transform.position);
+
+            if (distanceCheck < shortestDist)
+            {
+                shortestDist = distanceCheck;
+                savedIndex = x;
+                //print(savedIndex);
+            }
+        }
+        //print(savedIndex);
+
+        GameObject goingToCatch = myTeamManager.otherTeam.playersOnTeam[savedIndex];
+
+        print(goingToCatch);
+
+        
+
+        float distanceToBall = Vector3.Distance((GameManager.self.baseball.GetComponent<BaseballScript>().ball.transform.position), goingToCatch.transform.position);
+
+
+        if(Vector3.Distance(goingToCatch.transform.position, GameManager.self.baseball.GetComponent<BaseballScript>().ball.transform.position) > radiusOfSatisfaction)
+        {
+
+            // Calculate a vector to the position in the formation
+            Vector3 towards = (GameManager.self.baseball.GetComponent<BaseballScript>().ball.transform.position - goingToCatch.transform.position);
+
+            // Normalize vector to standardize movement speed
+            towards.Normalize();
+            towards *= 5f;
+            rb.velocity = towards;
+
+            if (distanceToBall < 0.5f)
+            {
+                CatchBall();
+            }
+        }
+
     }
 
 }
