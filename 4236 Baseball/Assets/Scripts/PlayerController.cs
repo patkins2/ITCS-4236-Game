@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour {
         currentPlayer = this.gameObject;
         trans = transform;
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
 
         myTeamManager = transform.parent.GetComponent<TeamManager>();
         if (!myTeamManager)
@@ -166,14 +167,18 @@ public class PlayerController : MonoBehaviour {
             }
         }
         
-        if (ballHit)
+        if (GameManager.self.currentGameState == GameManager.GameStates.BallInPlay)
         {
-            anim.SetBool("Run", true);
-            runToBase();
-            //print("Batter hit ball");  
-           
-            RunToBall();
-           
+            if (myTeamManager.role == TeamManager.TeamRole.BATTING && currentPlayer == myTeamManager.playersOnTeam[0])
+            {
+                anim.SetBool("Run", true);
+                runToBase();
+                //print("Batter hit ball");
+            }
+            else if (myTeamManager.role == TeamManager.TeamRole.FIELDING)
+            {
+                RunToBall();
+            }
         }
 
         //RunToBall();
@@ -300,14 +305,15 @@ public class PlayerController : MonoBehaviour {
     private void RunToBall()
     {
         float shortestDist = 10000f;
-
         int savedIndex = 0;
 
-        for (int x = 0; x < ((myTeamManager.otherTeam.playersOnTeam.Length) - 1); x++)
+        GameObject target = GameManager.self.baseball.GetComponent<BaseballScript>().target;
+        Vector3 targetPosition = target.transform.position;
+
+        for (int x = 0; x < myTeamManager.playersOnTeam.Length; x++)
         {
-            GameObject position = myTeamManager.otherTeam.playersOnTeam[x];
-            float distanceCheck = Vector3.Distance((GameManager.self.baseball.GetComponent<BaseballScript>().target.transform.position),
-            position.transform.position);
+            GameObject player = myTeamManager.playersOnTeam[x];
+            float distanceCheck = Vector3.Distance(targetPosition, player.transform.position);
 
             if (distanceCheck < shortestDist)
             {
@@ -317,31 +323,25 @@ public class PlayerController : MonoBehaviour {
             }
         }
         //print(savedIndex);
-
-        GameObject goingToCatch = myTeamManager.otherTeam.playersOnTeam[savedIndex];
-
-        print(goingToCatch);
-
+        GameObject goingToCatch = myTeamManager.playersOnTeam[savedIndex];
         
+        float distanceToBall = Vector3.Distance((GameManager.self.baseball.transform.position), goingToCatch.transform.position);
 
-        float distanceToBall = Vector3.Distance((GameManager.self.baseball.GetComponent<BaseballScript>().ball.transform.position), goingToCatch.transform.position);
+        Vector3 ballPos = GameManager.self.baseball.transform.position;
+        //Ball's position with y position equal to the catching player's position to stop them trying to run up
+        Vector3 ballPosAdjusted = new Vector3(ballPos.x, goingToCatch.transform.position.y, ballPos.z);
 
-
-        if(Vector3.Distance(goingToCatch.transform.position, GameManager.self.baseball.GetComponent<BaseballScript>().ball.transform.position) > radiusOfSatisfaction)
+        if (Vector3.Distance(goingToCatch.transform.position, ballPosAdjusted) > radiusOfSatisfaction && currentPlayer == goingToCatch)
         {
-
-            // Calculate a vector to the position in the formation
-            Vector3 towards = (GameManager.self.baseball.GetComponent<BaseballScript>().ball.transform.position - goingToCatch.transform.position);
-
-            // Normalize vector to standardize movement speed
-            towards.Normalize();
-            towards *= 5f;
-            rb.velocity = towards;
-
             if (distanceToBall < 0.5f)
             {
                 CatchBall();
+                return;
             }
+
+             goingToCatch.transform.position = Vector3.MoveTowards(goingToCatch.transform.position, ballPosAdjusted, 5f * Time.deltaTime);
+            //Turns instantly towards ball, finding correct rotation to turn smoothly gave wrong direction
+            trans.LookAt(ballPosAdjusted);
         }
 
     }
