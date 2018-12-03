@@ -308,40 +308,59 @@ public class PlayerController : MonoBehaviour {
         int savedIndex = 0;
 
         GameObject target = GameManager.self.baseball.GetComponent<BaseballScript>().target;
+
+
         Vector3 targetPosition = target.transform.position;
 
-        for (int x = 0; x < myTeamManager.playersOnTeam.Length; x++)
+        if (target.name.Equals("Target4") || target.name.Equals("Target7")) //in theory this should not have someone go after the ball if it is going to be a homerun 
         {
-            GameObject player = myTeamManager.playersOnTeam[x];
-            float distanceCheck = Vector3.Distance(targetPosition, player.transform.position);
-
-            if (distanceCheck < shortestDist)
-            {
-                shortestDist = distanceCheck;
-                savedIndex = x;
-                //print(savedIndex);
-            }
+            return;
         }
-        //print(savedIndex);
-        GameObject goingToCatch = myTeamManager.playersOnTeam[savedIndex];
-        
-        float distanceToBall = Vector3.Distance((GameManager.self.baseball.transform.position), goingToCatch.transform.position);
-
-        Vector3 ballPos = GameManager.self.baseball.transform.position;
-        //Ball's position with y position equal to the catching player's position to stop them trying to run up
-        Vector3 ballPosAdjusted = new Vector3(ballPos.x, goingToCatch.transform.position.y, ballPos.z);
-
-        if (Vector3.Distance(goingToCatch.transform.position, ballPosAdjusted) > radiusOfSatisfaction && currentPlayer == goingToCatch)
+        else
         {
-            if (distanceToBall < 0.5f)
-            {
-                CatchBall();
-                return;
-            }
 
-             goingToCatch.transform.position = Vector3.MoveTowards(goingToCatch.transform.position, ballPosAdjusted, 5f * Time.deltaTime);
-            //Turns instantly towards ball, finding correct rotation to turn smoothly gave wrong direction
-            trans.LookAt(ballPosAdjusted);
+            for (int x = 0; x < myTeamManager.playersOnTeam.Length; x++)
+            {
+                GameObject player = myTeamManager.playersOnTeam[x];
+                float distanceCheck = Vector3.Distance(targetPosition, player.transform.position);
+
+                if (distanceCheck < shortestDist)
+                {
+                    shortestDist = distanceCheck;
+                    savedIndex = x;
+                    //print(savedIndex);
+                }
+            }
+            //print(savedIndex);
+            GameObject goingToCatch = myTeamManager.playersOnTeam[savedIndex];
+
+
+
+            Vector3 ballPos = GameManager.self.baseball.transform.position;
+            //Ball's position with y position equal to the catching player's position to stop them trying to run up
+            Vector3 ballPosAdjusted = new Vector3(ballPos.x, goingToCatch.transform.position.y, ballPos.z);
+
+            if (Vector3.Distance(goingToCatch.transform.position, ballPosAdjusted) > radiusOfSatisfaction && currentPlayer == goingToCatch)
+            {
+
+                goingToCatch.transform.position = Vector3.MoveTowards(goingToCatch.transform.position, ballPosAdjusted, 5f * Time.deltaTime);
+                //Turns instantly towards ball, finding correct rotation to turn smoothly gave wrong direction
+                trans.LookAt(ballPosAdjusted);
+
+
+                float distanceToBall = Vector3.Distance((GameManager.self.baseball.transform.position), goingToCatch.transform.position);
+
+
+
+                if (distanceToBall < 2f)
+                {
+                    CatchBall();
+                    return;
+                }
+
+                //I tried using returnToPitcher but it made the ball go crazy
+
+            }
         }
 
     }
