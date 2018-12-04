@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour {
     
     private GameObject bat;
 
+    private GameObject throwHere;
+
     private TeamManager myTeamManager;
     
     private bool firstBaseVisited = false;
@@ -367,31 +369,31 @@ public class PlayerController : MonoBehaviour {
 
                 //I tried using ThrowToPitcher but it made the ball go crazy
 
+
+                //function call for the throw
+                figureWhereToThrow();
             }
         }
-        //function call for the throw
+        
     }
 
     private void figureWhereToThrow()
     {
-        GameObject throwHere = null;
+        
 
-        if (!firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
-            throwHere.transform.position = firstBase.transform.position;
-        else if (firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
-            throwHere.transform.position = secondBase.transform.position;
-        else if (firstBaseVisited && secondBaseVisited && !thirdBaseVisited)
-            throwHere.transform.position = thirdBase.transform.position;
+        PlayerController runner = myTeamManager.otherTeam.playersOnTeam[0].GetComponent<PlayerController>();
+        if (!runner.firstBaseVisited && !runner.secondBaseVisited && !runner.thirdBaseVisited)
+            throwHere = myTeamManager.playersOnTeam[2];
+        else if (runner.firstBaseVisited && !runner.secondBaseVisited && !runner.thirdBaseVisited)
+            throwHere = myTeamManager.playersOnTeam[3];
+        else if (runner.firstBaseVisited && runner.secondBaseVisited && runner.thirdBaseVisited)
+            throwHere = myTeamManager.playersOnTeam[4];
         else
         {
             //throwHere = Vector3.zero;
-            Debug.LogError("I don't know where I've been or where to go next");
+            Debug.LogError("I don't know who to throw to");
         }
-
-
         GameManager.self.baseball.GetComponent<BaseballScript>().ReleaseBall(throwHere);
-
-
     }
 
 }
