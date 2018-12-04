@@ -35,7 +35,7 @@ public class BatScript : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.CompareTag("Ball"))
+        if (other.gameObject.CompareTag("Ball") && GameManager.self.currentGameState == GameManager.GameStates.BallPitched)
         {
             TellBatterBallHit();
             //print("triggered by ball");

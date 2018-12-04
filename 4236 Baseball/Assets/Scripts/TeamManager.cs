@@ -25,6 +25,8 @@ public class TeamManager : MonoBehaviour {
     [SerializeField] private GameObject batterPrefab;
     [SerializeField] private GameObject pitcherPrefab;
     [SerializeField] private GameObject catcherPrefab;
+    [SerializeField] private Material blueSurfaceMat;
+    [SerializeField] private Material blueJointMat;
     [SerializeField] public TeamManager otherTeam;
     [SerializeField] private GameObject baseballBat;
 
@@ -124,6 +126,8 @@ public class TeamManager : MonoBehaviour {
                     {
                         position.positionOccupied = true;
                         playersOnTeam[i] = newPlayer;
+                        newPlayer.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().material = blueJointMat;
+                        newPlayer.transform.GetChild(1).GetComponent<SkinnedMeshRenderer>().material = blueSurfaceMat;
                         newPlayer.transform.position = position.transform.position;
                     }
                     break;
@@ -233,5 +237,18 @@ public class TeamManager : MonoBehaviour {
         }
 
         return newPlayer;
+    }
+
+    public GameObject SpawnBatter() {
+        GameObject batter = null;
+        if (role == TeamRole.BATTING)
+        {
+            batter = CreatePlayer(batterPrefab, "Batting");
+            playersOnTeam[0] = batter;
+            batter.transform.SetSiblingIndex(0);
+            batter.transform.Translate(new Vector3(-1, -1, 0), Space.Self);
+        }
+            
+        return batter;
     }
 }

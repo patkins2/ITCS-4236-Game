@@ -25,15 +25,17 @@ public class BaseballScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        ball.transform.parent = rightHand.transform;
+
         rb = GetComponent<Rigidbody>();
+        
         BallInHand();
 	}
 
     //Called from pitcher animator, releases ball from pitcher's hand and launches towards the batter
     public void ReleaseBall(GameObject throwDestination, float forceMultiplier = 1f)
     {
-        //print("ball thrown");
+        print("ball thrown to " + throwDestination.name);
+        print("ball thrown from " + transform.position);
         rb.detectCollisions = true;
         rb.constraints = RigidbodyConstraints.None;
         ball.transform.parent = null;
@@ -51,11 +53,12 @@ public class BaseballScript : MonoBehaviour {
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         ball.transform.rotation = rotation;
         rb.AddForce(relativePos.normalized * throwForce * forceMultiplier);
+
         StartCoroutine(BallNotHeld());
     }
 
     private IEnumerator BallNotHeld() {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.05f);
         held = false;
     }
 
@@ -104,7 +107,7 @@ public class BaseballScript : MonoBehaviour {
 
             this.GetComponent<Collider>().isTrigger = false;
             rb.useGravity = true;
-            //print("Going to " + target.name);
+            print("Going to " + target.name);
             // need to look into ballistic velocity
             SetVelocity(BallisticVel(target.transform.position, 15f));
         }
@@ -135,8 +138,11 @@ public class BaseballScript : MonoBehaviour {
 
     public void BallInHand() {
         rb.velocity = Vector3.zero;
-        transform.position = rightHand.transform.position;
         transform.parent = rightHand.transform;
+        transform.localPosition = Vector3.zero;
+        //TODO figure out why ball is spawning above pitcher
+        //print("Ball: " + transform.TransformPoint(transform.position));
+        //print("Hand: " + transform.parent.TransformPoint(transform.parent.position));
         rb = ball.GetComponent<Rigidbody>();
         rb.detectCollisions = false;
         rb.constraints = RigidbodyConstraints.None;
@@ -148,10 +154,10 @@ public class BaseballScript : MonoBehaviour {
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.tag.Equals("Ground"))
         {
-            print("Ball hit ground at y position: " + transform.position.y);
+            //print("Ball hit ground at y position: " + transform.position.y);
             hitGround = true;
         }
-        else
-            print("not ground, hit " + collision.gameObject.name);
+        //else
+            //print("not ground, hit " + collision.gameObject.name);
     }
 }
