@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour {
     [SerializeField] public Transform fieldPositions { get; private set; }
     public Transform battingPositions { get; private set; }
     public GameObject baseball { get; set; }
+    public BaseballScript ballScript;
 
     public GameObject strikeZone { get; private set; }
 
@@ -55,11 +56,20 @@ public class GameManager : MonoBehaviour {
         strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
     }
 
+    private void Update() {
+        if (!baseball)
+            return;
+        if (ballScript != null)
+            return;
+        ballScript = baseball.GetComponent<BaseballScript>();
+    }
+
     public void TeamFinishedSpawning() {
         numTeamsCreated++;
         if (numTeamsCreated >= 2)
         {
             currentGameState = GameStates.ReadyToPitch;
+            //ballScript = baseball.GetComponent<BaseballScript>();
         }
     }
 }

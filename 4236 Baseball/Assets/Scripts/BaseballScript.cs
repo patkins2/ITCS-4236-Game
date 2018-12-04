@@ -19,6 +19,7 @@ public class BaseballScript : MonoBehaviour {
     //public Transform trans;
 
     public bool held = false;
+    public bool hitGround = false;
     public GameObject catcher;
 
 
@@ -30,7 +31,7 @@ public class BaseballScript : MonoBehaviour {
 	}
 
     //Called from pitcher animator, releases ball from pitcher's hand and launches towards the batter
-    public void ReleaseBall(GameObject throwDestination)
+    public void ReleaseBall(GameObject throwDestination, float forceMultiplier = 1f)
     {
         //print("ball thrown");
         rb.detectCollisions = true;
@@ -43,10 +44,13 @@ public class BaseballScript : MonoBehaviour {
         {
             relativePos = new Vector3(relativePos.x, relativePos.y + 1, relativePos.z);
         }
-        //rb.useGravity = true;
+        
+        if (hitGround)
+            this.GetComponent<Collider>().isTrigger = true;
+
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         ball.transform.rotation = rotation;
-        rb.AddForce(relativePos.normalized * throwForce);
+        rb.AddForce(relativePos.normalized * throwForce * forceMultiplier);
         StartCoroutine(BallNotHeld());
     }
 
@@ -106,7 +110,7 @@ public class BaseballScript : MonoBehaviour {
         }
     }
 
-
+    //function to launch ball in arc
     Vector3 BallisticVel(Vector3 target, float angle)
     {
         Vector3 elevatedTarget = new Vector3(target.x, 1f, target.z);
@@ -139,5 +143,15 @@ public class BaseballScript : MonoBehaviour {
         rb.useGravity = false;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         held = true;
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag.Equals("Ground"))
+        {
+            print("Ball hit ground at y position: " + transform.position.y);
+            hitGround = true;
+        }
+        else
+            print("not ground, hit " + collision.gameObject.name);
     }
 }

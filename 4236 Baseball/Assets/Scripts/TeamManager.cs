@@ -17,6 +17,8 @@ using UnityEngine;
  */
 public class TeamManager : MonoBehaviour {
 
+    public GameObject closestToBall = null;
+
     //Generic player prefab for all positions other than batter and pitcher, 
     // since those are the only ones that need a gameobject attached to them (ball and bat)
     [SerializeField] private GameObject playerPrefab;
@@ -87,7 +89,6 @@ public class TeamManager : MonoBehaviour {
 
                     if (position.name.Equals("Pitcher")) {
                         newPlayer = CreatePlayer(pitcherPrefab, position.name);
-                        
                     }
                     else if (position.name.Equals("Catcher")) {
                         newPlayer = CreatePlayer(catcherPrefab, position.name);
@@ -128,11 +129,9 @@ public class TeamManager : MonoBehaviour {
                     break;
                 }
             }
-            if (i == playersOnTeam.Length - 1)
-            {
-                GameManager.self.TeamFinishedSpawning();
-            }
+            
         }
+        GameManager.self.TeamFinishedSpawning();
     }
 
     //Assigns players on the batting team to their proper positions
