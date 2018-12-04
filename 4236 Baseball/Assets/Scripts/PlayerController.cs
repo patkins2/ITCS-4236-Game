@@ -196,7 +196,7 @@ public class PlayerController : MonoBehaviour {
         anim.ResetTrigger("Swing");
     }
 
-    private void runToBase()
+    public void runToBase()
     {
         //Find which base to run to based on which bases have already been reached
         Vector3 basePosition;
@@ -343,7 +343,14 @@ public class PlayerController : MonoBehaviour {
             if (Vector3.Distance(goingToCatch.transform.position, ballPosAdjusted) > radiusOfSatisfaction && currentPlayer == goingToCatch)
             {
 
-                goingToCatch.transform.position = Vector3.MoveTowards(goingToCatch.transform.position, ballPosAdjusted, 5f * Time.deltaTime);
+                if (!target.name.Equals("Target8") || !target.name.Equals("Target9"))
+                {
+                    goingToCatch.transform.position = Vector3.MoveTowards(goingToCatch.transform.position, ballPosAdjusted, 5f * Time.deltaTime);
+                }
+                else
+                {
+                    goingToCatch.transform.position = Vector3.MoveTowards(goingToCatch.transform.position, ballPosAdjusted, 5f * Time.deltaTime);
+                }
                 //Turns instantly towards ball, finding correct rotation to turn smoothly gave wrong direction
                 trans.LookAt(ballPosAdjusted);
 
@@ -358,10 +365,32 @@ public class PlayerController : MonoBehaviour {
                     return;
                 }
 
-                //I tried using returnToPitcher but it made the ball go crazy
+                //I tried using ThrowToPitcher but it made the ball go crazy
 
             }
         }
+        //function call for the throw
+    }
+
+    private void figureWhereToThrow()
+    {
+        GameObject throwHere = null;
+
+        if (!firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
+            throwHere.transform.position = firstBase.transform.position;
+        else if (firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
+            throwHere.transform.position = secondBase.transform.position;
+        else if (firstBaseVisited && secondBaseVisited && !thirdBaseVisited)
+            throwHere.transform.position = thirdBase.transform.position;
+        else
+        {
+            //throwHere = Vector3.zero;
+            Debug.LogError("I don't know where I've been or where to go next");
+        }
+
+
+        GameManager.self.baseball.GetComponent<BaseballScript>().ReleaseBall(throwHere);
+
 
     }
 
