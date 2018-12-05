@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private GameObject currentPlayer;
     [SerializeField] public GameObject throwingHand;
     [SerializeField] private Collider catcherCollider;
+    [SerializeField] private Camera actionCamera;
 
     private Animator anim;
     private Transform trans;
@@ -37,6 +38,7 @@ public class PlayerController : MonoBehaviour {
     private GameObject secondBase;
     private GameObject thirdBase;
     private GameObject baseball;
+
     
     private GameObject bat;
 
@@ -47,10 +49,13 @@ public class PlayerController : MonoBehaviour {
     public bool firstBaseVisited = false;
     public bool secondBaseVisited = false;
     public bool thirdBaseVisited = false;
+    private bool keepRunning = true;
+    private bool arrivedAtBase = false;
     private float radiusOfSatisfaction = 1.25f;     //distance to destination when they can stop the running animation and start slowing down
 	
     // Use this for initialization
 	void Start () {
+        //actionCamera.enabled = false;
         currentPlayer = this.gameObject;
         trans = transform;
         anim = GetComponent<Animator>();
@@ -153,6 +158,12 @@ public class PlayerController : MonoBehaviour {
             }  
         }
 
+        if (Input.GetButtonDown("Don't Run"))
+        {
+            keepRunning = false;
+            Debug.Log("R was pressed");
+        }
+
         //when player left clicks, batter swings and starts running
         if (Input.GetMouseButtonDown(0)) {
             if (myTeamManager.role == TeamManager.TeamRole.BATTING && currentPlayer == myTeamManager.playersOnTeam[0]) {
@@ -185,17 +196,72 @@ public class PlayerController : MonoBehaviour {
 
     public void hit()
     {
+        actionCamera.enabled = true;
+        actionCamera.GetComponent<BaseballCameraScript>().followBall(true);
         bat.GetComponent <BatScript> ().ReleaseBat();
         anim.ResetTrigger("Swing");
     }
 
+    public void positionRunnerOnBase(GameObject currentBase)
+    {
+        float step = 5f * Time.deltaTime;
+        anim.SetTrigger("Walk Past Base");
+        Vector3 basePosition;
+        basePosition = currentBase.transform.position;
+        Vector3 offset;
+        if (currentBase.name.Equals("First Base")){  
+            offset = new Vector3(2.0f, 0, -2.2f);
+        }else if(currentBase.name.Equals("Second Base"))
+        {
+           
+            offset = new Vector3(3.2f, 0, 2.2f);
+        }
+        else
+        {
+            offset = new Vector3(-2.8f, 0, 2.5f);
+        }
+        basePosition = basePosition - offset;
+        while((basePosition - trans.position).magnitude > radiusOfSatisfaction)
+        {
+            basePosition = new Vector3(basePosition.x, trans.position.y, basePosition.z);
+            trans.position = Vector3.MoveTowards(trans.position, basePosition, step);
+            trans.LookAt(basePosition);
+        }
+        anim.ResetTrigger("Walk Past Base");
+        anim.SetTrigger("Stop Walking");
+    }
+
     public void runToBase()
     {
+
+        if(!keepRunning && arrivedAtBase)
+        {
+            GameObject currentBase;
+            if (firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
+            {
+                currentBase = firstBase;
+            }
+            else if(firstBaseVisited && secondBaseVisited && !thirdBaseVisited)
+            {
+                currentBase = secondBase;
+            }
+            else
+            {
+                currentBase = thirdBase;
+            }
+            anim.SetTrigger("Stop Running");
+            positionRunnerOnBase(currentBase);
+            return;
+        }
+
         if (GameManager.self.currentGameState == GameManager.GameStates.ResetBall || GameManager.self.currentGameState == GameManager.GameStates.ReadyToPitch)
         {
             ReturnToPosition();
             return;
         }
+
+
+       
             
         //Find which base to run to based on which bases have already been reached
         Vector3 basePosition;
@@ -229,11 +295,29 @@ public class PlayerController : MonoBehaviour {
         else
         {
             if (basePosition == firstBase.transform.position)
+            {
                 firstBaseVisited = true;
+                if (!keepRunning)
+                {
+                    arrivedAtBase = true;
+                }
+            }
             else if (basePosition == secondBase.transform.position)
+            {
                 secondBaseVisited = true;
+                if (!keepRunning)
+                {
+                    arrivedAtBase = true;
+                }
+            }
             else if (basePosition == thirdBase.transform.position)
+            {
                 thirdBaseVisited = true;
+                if (!keepRunning)
+                {
+                    arrivedAtBase = true;
+                }
+            }
             else if (basePosition == myTeamManager.otherTeam.playersOnTeam[1].transform.position)
             {
                 GameManager.self.Reset();

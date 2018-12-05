@@ -2160,10 +2160,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myPosition: 12
   ballHit: 0
+  leftHand: {fileID: 0}
   batter: {fileID: 1371912851445118, guid: e42a1cb3baa052a49a8e49d862a96433, type: 2}
   pitcher: {fileID: 1713238749872558, guid: 65e8ab1c3f96abf4a957c8715eeddce1, type: 2}
   currentPlayer: {fileID: 0}
   throwingHand: {fileID: 1582524522748332}
+  catcherCollider: {fileID: 0}
+  actionCamera: {fileID: 20410702651167634, guid: 9c8eb7ee1a81f2f4db5101df41576725,
+    type: 2}
+  firstBaseVisited: 0
+  secondBaseVisited: 0
+  thirdBaseVisited: 0
 --- !u!136 &136073850283366268
 CapsuleCollider:
   m_ObjectHideFlags: 1

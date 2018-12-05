@@ -2270,6 +2270,11 @@ MonoBehaviour:
   currentPlayer: {fileID: 0}
   throwingHand: {fileID: 0}
   catcherCollider: {fileID: 0}
+  actionCamera: {fileID: 20410702651167634, guid: 9c8eb7ee1a81f2f4db5101df41576725,
+    type: 2}
+  firstBaseVisited: 0
+  secondBaseVisited: 0
+  thirdBaseVisited: 0
 --- !u!114 &114949222799715240
 MonoBehaviour:
   m_ObjectHideFlags: 1
