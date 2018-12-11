@@ -76,6 +76,21 @@ public class PlayerController : MonoBehaviour {
         if (!myTeamManager)
             Debug.LogError("No manager");
 
+        
+        foreach(Transform position in GameManager.self.battingPositions){
+            if(position.name.Equals("Batter On Deck"))
+            {
+                onDeckPosition = position.gameObject;
+               
+            }
+            else if (position.name.Equals("Batting"))
+            {
+                homeBase = position.gameObject;
+                
+            }
+
+        }
+
         //Get position of each base
         foreach(Transform position in GameManager.self.fieldPositions)
         {
@@ -85,14 +100,27 @@ public class PlayerController : MonoBehaviour {
                 secondBase = position.gameObject;
             else if (position.name.Equals("Third Base"))
                 thirdBase = position.gameObject;
-            else if (position.name.Equals("Batting"))
-                homeBase = position.gameObject;
-            else if (position.name.Equals("Batter On Deck"))
-                onDeckPosition = position.gameObject;
+            
         }
 
         strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
         batter = GameObject.FindGameObjectWithTag("Batter");
+
+        
+        GameObject battingTeam = GameObject.Find("Team 1");
+        Transform[] objs = battingTeam.GetComponentsInChildren<Transform>();
+        foreach(Transform gameobj in objs)
+        {
+            if (gameobj.name.Contains("Bench"))
+            {
+                batters.Add(gameobj.gameObject);
+            }
+            if(gameobj.name.Equals("Batter On Deck"))
+            {
+                onDeck = gameobj.gameObject;
+            }
+        }
+
 
         //Make all players face the batter, except the batter who faces the pitcher
         Vector3 relativePos;
@@ -130,45 +158,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         //Set players' animations based on their position
-        if (currentPlayer.name.Equals("Pitcher"))   //if this player is the pitcher, find the baseball child component and store a reference to its GameObject
-        {
-            Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
-            foreach (Transform component in components)
-            {
-                if (component.name.Equals("Baseball"))
-                {
-                    baseball = component.gameObject;
-                    GameManager.self.baseball = baseball;
-                    GameManager.self.ballScript = baseball.GetComponent<BaseballScript>();
-                    GameManager.self.playerWithBall = this.gameObject;
-                }
-            }
-        }
-        else if (currentPlayer.name.Equals("Catcher"))
-        {
-            anim.Play("Catcher Idle");
-        }
-        else if (currentPlayer.name.Equals("Batting"))  //if this player is the batter, find the baseball bat child component and store a reference to its GameObject
-        {
-            Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
-            foreach(Transform component in components)
-            {
-                if (component.name.Equals("Bat"))
-                {
-                    bat = component.gameObject;
-                    bat.GetComponent<BatScript>().batter = currentPlayer.GetComponent<PlayerController>();
-                    GameManager.self.bat = bat;
-                    GameManager.self.batRB = bat.GetComponent<Rigidbody>();
-                    //GameManager.self.initialBatRotation = bat.transform.rotation.eulerAngles;
-                }
-            }
-            anim.Play("Baseball Idle");
-        }
-        else if(currentPlayer.name.Equals("Batter On Deck"))
-        {
-            anim.Play("Batter On Deck");
-            onDeck = currentPlayer;
-        }
+        updateAnimations();
    
     }
 	
@@ -260,6 +250,7 @@ public class PlayerController : MonoBehaviour {
         //if runner is told to stop running and is currently on a base
         if(!keepRunning && arrivedAtBase)
         {
+            changeBatter();
             GameObject currentBase;
             if (firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
             {
@@ -617,10 +608,74 @@ public class PlayerController : MonoBehaviour {
 
     private void changeBatter()
     {
-        if(Vector3.Distance(onDeck.transform.position, homeBase.transform.position) > radiusOfSatisfaction)
+        bool reachedHome = false;
+        bool reachedOnDeck = false;
+        if (Vector3.Distance(onDeck.transform.position, homeBase.transform.position) > radiusOfSatisfaction)
+        {
             onDeck.transform.position = Vector3.MoveTowards(onDeck.transform.position, homeBase.transform.position, 2.5f);
-        if(Vector3.Distance(batters[0].transform.position, onDeck.transform.position) > radiusOfSatisfaction)
+        }
+        else
+        {
+            updateAnimations();
+            reachedHome = true;
+        }
+
+        if (Vector3.Distance(batters[0].transform.position, onDeckPosition.transform.position) > radiusOfSatisfaction)
             batters[0].transform.position = Vector3.MoveTowards(batters[0].transform.position, onDeck.transform.position, 2.5f);
+        else
+        {
+            updateAnimations();
+            reachedOnDeck = true;
+        }
+
+        if(reachedHome && reachedOnDeck)
+        {
+            changeRunners();
+        }
+            
+    }
+
+    private void updateAnimations()
+    {
+        if (currentPlayer.name.Equals("Pitcher"))   //if this player is the pitcher, find the baseball child component and store a reference to its GameObject
+        {
+            Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
+            foreach (Transform component in components)
+            {
+                if (component.name.Equals("Baseball"))
+                {
+                    baseball = component.gameObject;
+                    GameManager.self.baseball = baseball;
+                    GameManager.self.ballScript = baseball.GetComponent<BaseballScript>();
+                    GameManager.self.playerWithBall = this.gameObject;
+                }
+            }
+        }
+        else if (currentPlayer.name.Equals("Catcher"))
+        {
+            anim.Play("Catcher Idle");
+        }
+        else if (currentPlayer.name.Equals("Batting"))  //if this player is the batter, find the baseball bat child component and store a reference to its GameObject
+        {
+            Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
+            foreach (Transform component in components)
+            {
+                if (component.name.Equals("Bat"))
+                {
+                    bat = component.gameObject;
+                    bat.GetComponent<BatScript>().batter = currentPlayer.GetComponent<PlayerController>();
+                    GameManager.self.bat = bat;
+                    GameManager.self.batRB = bat.GetComponent<Rigidbody>();
+                    //GameManager.self.initialBatRotation = bat.transform.rotation.eulerAngles;
+                }
+            }
+            anim.Play("Baseball Idle");
+        }
+        else if (currentPlayer.name.Equals("Batter On Deck"))
+        {
+            anim.Play("Batter On Deck");
+            onDeck = currentPlayer;
+        }
     }
     
 
@@ -652,7 +707,7 @@ public class PlayerController : MonoBehaviour {
             batter.name = "Batting";
 
             onDeck = batters[0];
-            for(int i = 1; i < batters.Count; i++)
+            for(int i = 1; i <= batters.Count; i++)
             {
                 batters[i - 1] = batters[i];
             }
