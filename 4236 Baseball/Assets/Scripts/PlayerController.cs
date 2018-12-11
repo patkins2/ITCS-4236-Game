@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
         PITCHER, CATCHER,
         BASEMAN_FIRST, BASEMAN_SECOND, BASEMAN_THIRD,
         SHORTSTOP, OUTFIELD_LEFT, OUTFIELD_CENTER, OUTFIELD_RIGHT,
-        BATTER, ONDECK, BENCH, INVALID
+        BATTER, ONDECK, BENCH, INVALID, RUNNER_FIRST, RUNNER_SECOND, RUNNER_THIRD
     }
     public Position myPosition = Position.INVALID;  //default before position is set
 
@@ -31,13 +31,22 @@ public class PlayerController : MonoBehaviour {
 
     private Animator anim;
     private Transform trans;
+    private List<GameObject> batters;
+    private List<GameObject> runners;
     //private Rigidbody rb;
 
     private GameObject strikeZone;
     private GameObject firstBase;
     private GameObject secondBase;
     private GameObject thirdBase;
+    private GameObject homeBase;
     private GameObject baseball;
+    private GameObject onDeck;
+    private GameObject onDeckPosition;
+    private GameObject runnerFirst;
+    private GameObject runnerSecond;
+    private GameObject runnerThird;
+    private GameObject runningHome;
 
     
     private GameObject bat;
@@ -58,7 +67,10 @@ public class PlayerController : MonoBehaviour {
         currentPlayer = this.gameObject;
         trans = transform;
         anim = GetComponent<Animator>();
+        batters = new List<GameObject>();
+        runners = new List<GameObject>();
         //rb = GetComponent<Rigidbody>();
+        
 
         myTeamManager = transform.parent.GetComponent<TeamManager>();
         if (!myTeamManager)
@@ -67,12 +79,16 @@ public class PlayerController : MonoBehaviour {
         //Get position of each base
         foreach(Transform position in GameManager.self.fieldPositions)
         {
-            if(position.name.Equals("First Base"))
+            if (position.name.Equals("First Base"))
                 firstBase = position.gameObject;
-            else if(position.name.Equals("Second Base"))
-                secondBase = position.gameObject;   
-            else if(position.name.Equals("Third Base"))
-                thirdBase = position.gameObject; 
+            else if (position.name.Equals("Second Base"))
+                secondBase = position.gameObject;
+            else if (position.name.Equals("Third Base"))
+                thirdBase = position.gameObject;
+            else if (position.name.Equals("Batting"))
+                homeBase = position.gameObject;
+            else if (position.name.Equals("Batter On Deck"))
+                onDeckPosition = position.gameObject;
         }
 
         strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
@@ -81,6 +97,11 @@ public class PlayerController : MonoBehaviour {
         //Make all players face the batter, except the batter who faces the pitcher
         Vector3 relativePos;
         Quaternion rotation;
+
+        if (currentPlayer.name.Contains("Bench"))
+        {
+            batters.Add(currentPlayer);
+        }
         if (currentPlayer.name.Equals("Batting") || currentPlayer.name.Equals("Catcher"))
         {
             relativePos = pitcher.transform.position - trans.position;  //direction: batter -> pitcher
@@ -146,6 +167,7 @@ public class PlayerController : MonoBehaviour {
         else if(currentPlayer.name.Equals("Batter On Deck"))
         {
             anim.Play("Batter On Deck");
+            onDeck = currentPlayer;
         }
    
     }
@@ -591,6 +613,51 @@ public class PlayerController : MonoBehaviour {
         currentPlayer.transform.LookAt(adjustedPosition);
         //print(currentPlayer.name + " getting back into position");
         return false;
+    }
+
+    private void changeBatter()
+    {
+        if(Vector3.Distance(onDeck.transform.position, homeBase.transform.position) > radiusOfSatisfaction)
+            onDeck.transform.position = Vector3.MoveTowards(onDeck.transform.position, homeBase.transform.position, 2.5f);
+        if(Vector3.Distance(batters[0].transform.position, onDeck.transform.position) > radiusOfSatisfaction)
+            batters[0].transform.position = Vector3.MoveTowards(batters[0].transform.position, onDeck.transform.position, 2.5f);
+    }
+    
+
+    private void changeRunners()
+    {
+        if(batters.Count > 0)
+        {
+            if(runnerThird != null)
+            {
+                Destroy(runnerThird);
+            }
+
+            if(runnerSecond != null)
+            {
+                runnerThird = runnerSecond;
+                runnerThird.name = "Runner on Third";
+            }
+
+            if(runnerFirst != null)
+            {
+                runnerSecond = runnerFirst;
+                runnerSecond.name = "Runner on Second";
+            }
+
+            runnerFirst = batter;
+            runnerFirst.name = "Runner on First";
+
+            batter = onDeck;
+            batter.name = "Batting";
+
+            onDeck = batters[0];
+            for(int i = 1; i < batters.Count; i++)
+            {
+                batters[i - 1] = batters[i];
+            }
+
+        }
     }
 
 }
