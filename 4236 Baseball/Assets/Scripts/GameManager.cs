@@ -89,7 +89,10 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Reset() {
-        
+
+        if (playerWithBall != null)
+            baseball.transform.localPosition = Vector3.zero;
+
         if ( currentGameState == GameStates.ResetBall)
         {
             print("GM resetting");

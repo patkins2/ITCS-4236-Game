@@ -48,7 +48,6 @@ public class PlayerController : MonoBehaviour {
     private GameObject runnerThird;
     private GameObject runningHome;
 
-    
     private GameObject bat;
 
     private TeamManager myTeamManager;
@@ -73,6 +72,7 @@ public class PlayerController : MonoBehaviour {
         
 
         myTeamManager = transform.parent.GetComponent<TeamManager>();
+
         if (!myTeamManager)
             Debug.LogError("No manager");
 
@@ -86,27 +86,17 @@ public class PlayerController : MonoBehaviour {
             else if (position.name.Equals("Batting"))
             {
                 homeBase = position.gameObject;
-                
             }
 
         }
 
-        //Get position of each base
-        foreach(Transform position in GameManager.self.fieldPositions)
-        {
-            if (position.name.Equals("First Base"))
-                firstBase = position.gameObject;
-            else if (position.name.Equals("Second Base"))
-                secondBase = position.gameObject;
-            else if (position.name.Equals("Third Base"))
-                thirdBase = position.gameObject;
-            
-        }
+        firstBase = GameManager.self.fieldPositions.GetChild(2).gameObject;
+        secondBase = GameManager.self.fieldPositions.GetChild(3).gameObject;
+        thirdBase = GameManager.self.fieldPositions.GetChild(4).gameObject;
 
         strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
         batter = GameObject.FindGameObjectWithTag("Batter");
 
-        
         GameObject battingTeam = GameObject.Find("Team 1");
         Transform[] objs = battingTeam.GetComponentsInChildren<Transform>();
         foreach(Transform gameobj in objs)
@@ -152,7 +142,7 @@ public class PlayerController : MonoBehaviour {
         }
        
         //Tell ball this is the catcher
-        if (currentPlayer.name.Equals("Catcher"))
+        if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer == myTeamManager.playersOnTeam[1])
         {
             GameManager.self.baseball.GetComponent<BaseballScript>().catcher = currentPlayer;
         }
@@ -277,9 +267,10 @@ public class PlayerController : MonoBehaviour {
             return;
         }
             
-        //Find which base to run to based on which bases have already been reached
         Vector3 basePosition;
         float step = 5f * Time.deltaTime;
+
+        //Find which base to run to based on which bases have already been reached
         if (!firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
             basePosition = GameManager.self.basePositions[0];
         else if (firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
@@ -303,12 +294,13 @@ public class PlayerController : MonoBehaviour {
 
             //match base y position to runners y position, stops them from running up
             basePosition = new Vector3(basePosition.x, trans.position.y, basePosition.z);
+
             trans.position = Vector3.MoveTowards(trans.position, basePosition, step);
+
             //Turns instantly towards next base, finding correct rotation to turn smoothly gave wrong direction
             trans.LookAt(basePosition);
-            //trans.rotation = Quaternion.RotateTowards(trans.rotation, rotation, Time.deltaTime * 100f);
         }
-        //Close enough to base to stop running OR go to next base
+        //Runner is close enough to base to stop running OR to go to next base
         else
         {
             //At first base
@@ -355,7 +347,7 @@ public class PlayerController : MonoBehaviour {
 
     public void CatchBall() {
         anim.SetTrigger("Catch");
-        //TODO if a baseman, check if they are in front of the runner
+
         PlayerController runner = myTeamManager.otherTeam.playersOnTeam[0].GetComponent<PlayerController>();
 
         //first baseman, player not yet arrived
@@ -429,7 +421,7 @@ public class PlayerController : MonoBehaviour {
         GameManager.self.ballScript.BallInHand();
 
         yield return new WaitForSeconds(waitTime);
-        //print("wait time up, throwing");
+
         if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer != myTeamManager.playersOnTeam[0])
             anim.SetTrigger("Throw");
     }
@@ -457,8 +449,8 @@ public class PlayerController : MonoBehaviour {
                 if (currentPlayer == myTeamManager.playersOnTeam[1])
                     GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
 
-                GameManager.self.baseball.GetComponent<BaseballScript>().rightHand = throwingHand;
-                GameManager.self.baseball.GetComponent<BaseballScript>().BallInHand();
+                GameManager.self.ballScript.rightHand = throwingHand;
+                GameManager.self.ballScript.BallInHand();
                 CatchBall();
             }
         }
@@ -496,11 +488,10 @@ public class PlayerController : MonoBehaviour {
 
         if (currentPlayer == goingToCatch)
             anim.SetBool("Run", true);
+        //if this fielder isn't going to catch the ball
         else
         {
-            //if this fielder isn't going to catch the ball
-            //true if they are in position
-            if (ReturnToPosition())
+            if (ReturnToPosition())     //true if player is in correct position
                 anim.SetBool("Run", false);
         }
             
@@ -539,6 +530,7 @@ public class PlayerController : MonoBehaviour {
         if ((currentPlayer == myTeamManager.playersOnTeam[1] || GameManager.self.currentGameState == GameManager.GameStates.ResetBall))
         {
             print("Returning ball to pitcher");
+            GameManager.self.playerWithBall = null;
             GameManager.self.ballScript.ReleaseBall(myTeamManager.playersOnTeam[0]);
             return;
         }
@@ -614,10 +606,11 @@ public class PlayerController : MonoBehaviour {
         }
 
         print("Returning " + currentPlayer.name + " to their position");
-        currentPlayer.transform.position = Vector3.MoveTowards(currentPlayer.transform.position, correctPosition.position, 5f * Time.deltaTime);
-        anim.SetBool("Run", true);
+
+        currentPlayer.transform.position = Vector3.MoveTowards(currentPlayer.transform.position, correctPosition.position, 5f * Time.deltaTime); 
         currentPlayer.transform.LookAt(adjustedPosition);
-        //print(currentPlayer.name + " getting back into position");
+
+        anim.SetBool("Run", true);
         return false;
     }
 
@@ -652,7 +645,8 @@ public class PlayerController : MonoBehaviour {
 
     private void updateAnimations()
     {
-        if (currentPlayer.name.Equals("Pitcher"))   //if this player is the pitcher, find the baseball child component and store a reference to its GameObject
+        //if this player is the pitcher, find the baseball child component and store a reference to its GameObject
+        if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer == myTeamManager.playersOnTeam[0])   
         {
             Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
             foreach (Transform component in components)
@@ -666,12 +660,12 @@ public class PlayerController : MonoBehaviour {
                 }
             }
         }
-        else if (currentPlayer.name.Equals("Catcher"))
+        else if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer == myTeamManager.playersOnTeam[1])
         {
             print("resetting catcher");
             anim.Play("Catcher Idle");
         }
-        else if (currentPlayer.name.Equals("Batting"))  //if this player is the batter, find the baseball bat child component and store a reference to its GameObject
+        else if (myTeamManager.role == TeamManager.TeamRole.BATTING && currentPlayer == myTeamManager.playersOnTeam[0])  //if this player is the batter, find the baseball bat child component and store a reference to its GameObject
         {
             Transform[] components = currentPlayer.GetComponentsInChildren<Transform>();
             foreach (Transform component in components)
@@ -687,7 +681,7 @@ public class PlayerController : MonoBehaviour {
             }
             anim.Play("Baseball Idle");
         }
-        else if (currentPlayer.name.Equals("Batter On Deck"))
+        else if (myTeamManager.role == TeamManager.TeamRole.BATTING && currentPlayer == myTeamManager.playersOnTeam[1])
         {
             anim.Play("Batter On Deck");
             onDeck = currentPlayer;
