@@ -34,8 +34,8 @@ public class BaseballScript : MonoBehaviour {
     //Called from pitcher animator, releases ball from pitcher's hand and launches towards the batter
     public void ReleaseBall(GameObject throwDestination, float forceMultiplier = 1f)
     {
-        print("ball thrown to " + throwDestination.name);
-        print("ball thrown from " + transform.position);
+        //print("ball thrown to " + throwDestination.name);
+        //print("ball thrown from " + transform.position);
         rb.detectCollisions = true;
         rb.constraints = RigidbodyConstraints.None;
         ball.transform.parent = null;
@@ -112,7 +112,7 @@ public class BaseballScript : MonoBehaviour {
 
             this.GetComponent<Collider>().isTrigger = false;
             rb.useGravity = true;
-            print("Going to " + target.name);
+            //print("Going to " + target.name);
             // need to look into ballistic velocity
             SetVelocity(BallisticVel(target.transform.position, 15f));
         }

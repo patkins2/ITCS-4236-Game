@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour {
 
         if ( currentGameState == GameStates.ResetBall)
         {
-            print("GM resetting");
+            //print("GM resetting");
             //ResetBatter();
             ResetTeam();
             StartCoroutine(ResetBall());
@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour {
             if (playerWithBall != pitcher && ballScript.held && !returningBallToPitcher)// && 
                 //(pwbAnim.GetCurrentAnimatorStateInfo(0).IsName("Throw") || pwbAnim.GetCurrentAnimatorStateInfo(0).IsName("Catch")))
             {
-                print(playerWithBall.name + " has the ball");
+                //print(playerWithBall.name + " has the ball");
                 //baseball.transform.parent = pitcher.GetComponent<PlayerController>().throwingHand.transform;
                 pwbAnim.SetTrigger("Throw");
                 //playerWithBall = pitcher;

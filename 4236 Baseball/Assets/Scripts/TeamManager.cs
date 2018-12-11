@@ -47,8 +47,8 @@ public class TeamManager : MonoBehaviour {
         otherTeam = name.Equals(teams[0].gameObject.name) ? teams[1] : teams[0];
         
         //Print to make sure each team knows who they are and who they're playing against
-        print("This team:" + name);
-        print("Other team:" + otherTeam.gameObject.name);
+        //print("This team:" + name);
+        //print("Other team:" + otherTeam.gameObject.name);
 
         //check role of other team
         //if undefined, default self to fielding
@@ -62,7 +62,7 @@ public class TeamManager : MonoBehaviour {
 
     //Checks the current team's role and then assigns players to their proper positions
     private void AssignPlayersToPositions() {
-        print("This team's role is " + role.ToString());
+        //print("This team's role is " + role.ToString());
         if (role == TeamRole.FIELDING) {
             
             AssignPositions_Fielding();
