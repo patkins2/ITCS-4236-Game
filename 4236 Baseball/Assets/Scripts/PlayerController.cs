@@ -264,7 +264,6 @@ public class PlayerController : MonoBehaviour {
             {
                 currentBase = thirdBase;
             }
-            print("stopping running");
             anim.SetBool("Run", false);
             //positionRunnerOnBase(currentBase);
             return;
@@ -310,6 +309,7 @@ public class PlayerController : MonoBehaviour {
         //Close enough to base to stop running OR go to next base
         else
         {
+            //At first base
             if (basePosition == GameManager.self.basePositions[0])
             {
                 firstBaseVisited = true;
@@ -318,6 +318,7 @@ public class PlayerController : MonoBehaviour {
                     arrivedAtBase = true;
                 }
             }
+            //At second base
             else if (basePosition == GameManager.self.basePositions[1])
             {
                 secondBaseVisited = true;
@@ -326,6 +327,7 @@ public class PlayerController : MonoBehaviour {
                     arrivedAtBase = true;
                 }
             }
+            //At third base
             else if (basePosition == GameManager.self.basePositions[2])
             {
                 thirdBaseVisited = true;
@@ -334,12 +336,17 @@ public class PlayerController : MonoBehaviour {
                     arrivedAtBase = true;
                 }
             }
-            //
+            //At home
             else if (basePosition == GameManager.self.basePositions[3])
             {
-                GameManager.self.Reset();
+                print("Reached home");
+                reachedHome = true;
+                if (!keepRunning)
+                {
+                    arrivedAtBase = true;
+                }
+                GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
             }
-
         }
             
     }
@@ -385,7 +392,8 @@ public class PlayerController : MonoBehaviour {
         }
         else if (currentPlayer == myTeamManager.playersOnTeam[1] && !runner.reachedHome)
         {
-
+            GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
+            print(currentPlayer.name + " has ball before runner arrived");
         }
         else
         {
@@ -453,7 +461,6 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-
     private void RunToBall()
     {
         float shortestDist = 10000f;
@@ -490,7 +497,8 @@ public class PlayerController : MonoBehaviour {
         {
             //if this fielder isn't going to catch the ball
             //true if they are in position
-            if (ReturnToPosition()) anim.SetBool("Run", false);
+            if (ReturnToPosition())
+                anim.SetBool("Run", false);
         }
             
         //Ball's position with y position equal to the catching player's position to stop them trying to run up
@@ -521,14 +529,14 @@ public class PlayerController : MonoBehaviour {
         PlayerController runner = myTeamManager.otherTeam.playersOnTeam[0].GetComponent<PlayerController>();
         GameObject throwHere = null;
 
-        if ((currentPlayer == myTeamManager.playersOnTeam[0] || GameManager.self.currentGameState == GameManager.GameStates.ResetBall))
+        if (currentPlayer == myTeamManager.playersOnTeam[0])
             return;
 
         //if catcher catches the ball, return to pitcher
         if ((currentPlayer == myTeamManager.playersOnTeam[1] || GameManager.self.currentGameState == GameManager.GameStates.ResetBall))
-            //&& Vector3.Distance(currentPlayer.transform.position, GameManager.self.baseball.transform.position) < 5f)
         {
-            GameManager.self.baseball.GetComponent<BaseballScript>().ReleaseBall(myTeamManager.playersOnTeam[0]);
+            print("Returning ball to pitcher");
+            GameManager.self.ballScript.ReleaseBall(myTeamManager.playersOnTeam[0]);
             return;
         }
 
@@ -541,17 +549,19 @@ public class PlayerController : MonoBehaviour {
         //throw to third base
         else if (runner.firstBaseVisited && runner.secondBaseVisited && !runner.thirdBaseVisited)
             throwHere = myTeamManager.playersOnTeam[4];
-        else if (runner.firstBaseVisited && runner.secondBaseVisited && !runner.thirdBaseVisited)
-            throwHere = myTeamManager.playersOnTeam[0];
+        //if three bases are passed, throw to home
+        else if (runner.firstBaseVisited && runner.secondBaseVisited && runner.thirdBaseVisited)
+            throwHere = myTeamManager.playersOnTeam[1];
         else
         {
-        //    Debug.LogError("I don't know who to throw to");
-            
+            //    Debug.LogError("I don't know who to throw to");
+            //Default throw back to pitcher
+            throwHere = myTeamManager.playersOnTeam[0];
         }
 
         if (!throwHere)
         {
-            //Debug.LogError("No throw target");
+            Debug.LogError("No throw target");
             return;
         }
 
@@ -567,7 +577,7 @@ public class PlayerController : MonoBehaviour {
         //Cap modifier at 3x normal speed
         throwForceModifier = (throwForceModifier > 3) ? 3 : throwForceModifier;
 
-        GameManager.self.baseball.GetComponent<BaseballScript>().ReleaseBall(throwHere, throwForceModifier);
+        GameManager.self.ballScript.ReleaseBall(throwHere, throwForceModifier);
         GameManager.self.playerWithBall = null;
     }
 
@@ -586,15 +596,17 @@ public class PlayerController : MonoBehaviour {
         {
             anim.SetBool("Run", false);
             currentPlayer.transform.position = adjustedPosition;
+
+            //fielders face batter, batting team faces pitcher
+            currentPlayer.transform.LookAt(myTeamManager.otherTeam.playersOnTeam[0].transform);
+
             //catcher faces pitcher
             if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer == myTeamManager.playersOnTeam[1])
                 currentPlayer.transform.LookAt(myTeamManager.playersOnTeam[0].transform);
-            //fielders face batter, batting team faces pitcher
-            currentPlayer.transform.LookAt(myTeamManager.otherTeam.playersOnTeam[0].transform);
             
             //when batter is back in position give them the bat;
             if (myTeamManager.role == TeamManager.TeamRole.BATTING && currentPlayer == myTeamManager.playersOnTeam[0])
-                GameManager.self.Reset();
+                GameManager.self.ResetBatter();
             return true;
         }
 
@@ -616,7 +628,7 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            updateAnimations();
+            //updateAnimations();
             reachedHome = true;
         }
 
@@ -624,7 +636,7 @@ public class PlayerController : MonoBehaviour {
             batters[0].transform.position = Vector3.MoveTowards(batters[0].transform.position, onDeck.transform.position, 2.5f);
         else
         {
-            updateAnimations();
+            //updateAnimations();
             reachedOnDeck = true;
         }
 
@@ -653,6 +665,7 @@ public class PlayerController : MonoBehaviour {
         }
         else if (currentPlayer.name.Equals("Catcher"))
         {
+            print("resetting catcher");
             anim.Play("Catcher Idle");
         }
         else if (currentPlayer.name.Equals("Batting"))  //if this player is the batter, find the baseball bat child component and store a reference to its GameObject

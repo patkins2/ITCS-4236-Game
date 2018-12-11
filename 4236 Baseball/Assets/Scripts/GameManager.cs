@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour {
     [SerializeField] private GameObject teamMngrPrefab;
 
     private GameObject team1, team2;
+    private bool returningBallToPitcher = false;
+    private bool batterReady = false;
 
     // Use this for initialization
     void Start () {
@@ -73,6 +75,10 @@ public class GameManager : MonoBehaviour {
         strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
     }
 
+    private void Update() {
+        Reset();
+    }
+
     public void TeamFinishedSpawning() {
         numTeamsCreated++;
         if (numTeamsCreated >= 2)
@@ -87,14 +93,14 @@ public class GameManager : MonoBehaviour {
         if ( currentGameState == GameStates.ResetBall)
         {
             print("GM resetting");
-            ResetBatter();
+            //ResetBatter();
             ResetTeam();
-            //ResetBat();
             StartCoroutine(ResetBall());
         }
     }
 
-    private void ResetBatter() {
+    //Called by the batter's player scipt when he has returned to position
+    public void ResetBatter() {
         PlayerController batter = team1.GetComponent<TeamManager>().playersOnTeam[0].GetComponent<PlayerController>();
         Destroy(batter.gameObject);
         batter = team1.GetComponent<TeamManager>().SpawnBatter().GetComponent<PlayerController>();
@@ -102,14 +108,19 @@ public class GameManager : MonoBehaviour {
         batter.firstBaseVisited = false;
         batter.secondBaseVisited = false;
         batter.thirdBaseVisited = false;
+        batterReady = true;
     }
 
     private void ResetTeam() {
         team1.GetComponent<TeamManager>().closestToBall = null;
         team2.GetComponent<TeamManager>().closestToBall = null;
-
+        
         foreach (GameObject player in team2.GetComponent<TeamManager>().playersOnTeam)
         {
+            //if this player has the ball, don't idle, they need to throw it back to pitcher
+            if (player == playerWithBall)
+                continue;
+
             if (player == team2.GetComponent<TeamManager>().playersOnTeam[1])
                 player.GetComponent<Animator>().Play("Catcher Idle");
             else
@@ -117,47 +128,16 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    /*
-    private void ResetBat() {
-        GameObject batter = team1.GetComponent<TeamManager>().playersOnTeam[0];
-        GameObject hand = batter.GetComponent<PlayerController>().leftHand;
-        if (bat.transform.parent != hand.transform)
-        {
-            print("Reseting bat");
-            batRB.constraints = RigidbodyConstraints.FreezePosition;
-            batRB.useGravity = false;
-            bat.transform.parent = batter.GetComponent<PlayerController>().leftHand.transform;
-            bat.transform.position = bat.transform.parent.position;
-            StartCoroutine(FixBatRotation());
-            //bat.transform.rotation = Quaternion.Euler(Vector3.zero);//bat.transform.parent.rotation;
-            //bat.transform.rotation = Quaternion.Euler(bat.transform.rotation.eulerAngles.x + 95f, bat.transform.rotation.eulerAngles.y, bat.transform.rotation.eulerAngles.z);
-            //bat.transform.localRotation = Quaternion.Euler(initialBatRotation);
-        }
-        else
-        {
-            print("bats parent: " + bat.transform.parent.gameObject.name);
-        }
-    }
-    
-    private IEnumerator FixBatRotation() {
-        yield return new WaitForSeconds(0.2f);
-        bat.transform.rotation = Quaternion.Euler(Vector3.zero);
-        bat.transform.localRotation = Quaternion.Euler(initialBatRotation);
-    }
-    */
-
     private IEnumerator ResetBall() {
         if (baseball)
         {
-            yield return new WaitForSeconds(0.4f);
             GameObject pitcher = team2.GetComponent<TeamManager>().playersOnTeam[0];
             Vector3 pitcherPos = pitcher.transform.position;
             Vector3 catcherPos = team2.GetComponent<TeamManager>().playersOnTeam[0].transform.position;
             //ball is reset by players unless hit out of bounds
-            if ((baseball.transform.position.y < 5f && !ballScript.held)) //||
-                //Vector3.Distance(baseball.transform.position, pitcherPos) < 5f ||
-                //Vector3.Distance(baseball.transform.position, catcherPos) > 5f)
+            if ((baseball.transform.position.y < -5f && !ballScript.held))
             {
+                yield return new WaitForSeconds(0.4f);
                 Rigidbody ballRB = baseball.GetComponent<Rigidbody>();
                 ballRB.velocity = Vector3.zero;
                 GameObject hand = team2.GetComponent<TeamManager>().playersOnTeam[0].GetComponent<PlayerController>().throwingHand;
@@ -170,12 +150,27 @@ public class GameManager : MonoBehaviour {
                 ballScript.hitGround = false;
                 ballScript.target = strikeZone;
             }
-            currentGameState = GameStates.ReadyToPitch;
-            if (Vector3.Distance(baseball.transform.position, pitcherPos) > 5f)
+            Animator pwbAnim = playerWithBall.GetComponent<Animator>();
+            //print("Throwing?: " + pwbAnim.GetCurrentAnimatorStateInfo(0).IsName("Throw"));
+            //print("Catching?: " + pwbAnim.GetCurrentAnimatorStateInfo(0).IsName("Catch"));
+            if (playerWithBall != pitcher && ballScript.held && !returningBallToPitcher)// && 
+                //(pwbAnim.GetCurrentAnimatorStateInfo(0).IsName("Throw") || pwbAnim.GetCurrentAnimatorStateInfo(0).IsName("Catch")))
             {
-                baseball.transform.parent = pitcher.GetComponent<PlayerController>().throwingHand.transform;
-                baseball.transform.localPosition = Vector3.zero;
+                print(playerWithBall.name + " has the ball");
+                //baseball.transform.parent = pitcher.GetComponent<PlayerController>().throwingHand.transform;
+                pwbAnim.SetTrigger("Throw");
+                //playerWithBall = pitcher;
+                //baseball.transform.localPosition = Vector3.zero;
+                returningBallToPitcher = true;
             }
+
+            if (playerWithBall == pitcher && batterReady)
+            {
+                currentGameState = GameStates.ReadyToPitch;
+                returningBallToPitcher = false;
+                batterReady = false;
+            }
+                
         }
     }
 
