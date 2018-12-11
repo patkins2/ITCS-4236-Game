@@ -165,14 +165,16 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
         //When player right clicks, the ball is pitched to batter
         if (Input.GetMouseButtonDown(1)) {
-            if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer == myTeamManager.playersOnTeam[0]) {
+            if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer == myTeamManager.playersOnTeam[0] && GameManager.self.currentGameState == GameManager.GameStates.ReadyToPitch) {
                 anim.SetTrigger("Pitch");    
             }  
         }
 
-        if (Input.GetButtonDown("Don't Run"))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            keepRunning = false;
+            //keepRunning = false;
+            //GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
+            SceneManager.LoadScene(1);
             Debug.Log("R was pressed");
         }
 
@@ -428,7 +430,8 @@ public class PlayerController : MonoBehaviour {
 
         yield return new WaitForSeconds(waitTime);
         //print("wait time up, throwing");
-        anim.SetTrigger("Throw");
+        if (myTeamManager.role == TeamManager.TeamRole.FIELDING && currentPlayer != myTeamManager.playersOnTeam[0])
+            anim.SetTrigger("Throw");
     }
 
     private void PitchWhenReady() {

@@ -68,8 +68,8 @@ public class BaseballScript : MonoBehaviour {
             
             //Ball is randomly hit towards one of the invisible targets on the field
             //Random rnd = new Random();
-            targetNum = Random.Range(1, 8); //random number between 1 and 9
-            
+            targetNum = Random.Range(1, 10); //random number between 1 and 9
+
             //based on the random number, assign where the ball will go. 
             switch (targetNum)
             {
@@ -100,7 +100,12 @@ public class BaseballScript : MonoBehaviour {
                 case 7:
                     target = GameObject.Find("Target9");
                     break;
-
+                case 8:
+                    target = GameObject.Find("Target10");
+                    break;
+                case 9:
+                    target = GameObject.Find("Target11");
+                    break;
                 default:
                     break;
             }

@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour {
                 ballRB.useGravity = false;
                 ballRB.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 ballScript.held = true;
-                ballScript.hitGround = false;
+                
                 ballScript.target = strikeZone;
             }
             Animator pwbAnim = playerWithBall.GetComponent<Animator>();
@@ -169,6 +169,7 @@ public class GameManager : MonoBehaviour {
                 currentGameState = GameStates.ReadyToPitch;
                 returningBallToPitcher = false;
                 batterReady = false;
+                ballScript.hitGround = false;
             }
                 
         }
