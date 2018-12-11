@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour {
 
     private Animator anim;
     private Transform trans;
-    private Rigidbody rb;
+    //private Rigidbody rb;
 
     private GameObject strikeZone;
     private GameObject firstBase;
@@ -42,13 +42,12 @@ public class PlayerController : MonoBehaviour {
     
     private GameObject bat;
 
-    
-
     private TeamManager myTeamManager;
     
     public bool firstBaseVisited = false;
     public bool secondBaseVisited = false;
     public bool thirdBaseVisited = false;
+    public bool reachedHome = false;
     private bool keepRunning = true;
     private bool arrivedAtBase = false;
     private float radiusOfSatisfaction = 1.25f;     //distance to destination when they can stop the running animation and start slowing down
@@ -59,7 +58,7 @@ public class PlayerController : MonoBehaviour {
         currentPlayer = this.gameObject;
         trans = transform;
         anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
 
         myTeamManager = transform.parent.GetComponent<TeamManager>();
         if (!myTeamManager)
@@ -120,6 +119,7 @@ public class PlayerController : MonoBehaviour {
                     baseball = component.gameObject;
                     GameManager.self.baseball = baseball;
                     GameManager.self.ballScript = baseball.GetComponent<BaseballScript>();
+                    GameManager.self.playerWithBall = this.gameObject;
                 }
             }
         }
@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour {
         {
             if (myTeamManager.role == TeamManager.TeamRole.BATTING && currentPlayer == myTeamManager.playersOnTeam[0])
             {
-                anim.SetBool("Run", true);
+                
                 runToBase();
                 //print("Batter hit ball");
             }
@@ -190,6 +190,7 @@ public class PlayerController : MonoBehaviour {
 
     public void pitch()
     {
+        GameManager.self.playerWithBall = null;
         GameManager.self.baseball.GetComponent<BaseballScript>().ReleaseBall(GameManager.self.strikeZone);
         GameManager.self.currentGameState = GameManager.GameStates.BallPitched;
     }
@@ -198,6 +199,7 @@ public class PlayerController : MonoBehaviour {
     {
         actionCamera.enabled = true;
         actionCamera.GetComponent<BaseballCameraScript>().followBall(true);
+        GameManager.self.playerWithBall = null;
         bat.GetComponent <BatScript> ().ReleaseBat();
         anim.ResetTrigger("Swing");
     }
@@ -233,7 +235,7 @@ public class PlayerController : MonoBehaviour {
 
     public void runToBase()
     {
-
+        //if runner is told to stop running and is currently on a base
         if(!keepRunning && arrivedAtBase)
         {
             GameObject currentBase;
@@ -249,8 +251,9 @@ public class PlayerController : MonoBehaviour {
             {
                 currentBase = thirdBase;
             }
-            anim.SetTrigger("Stop Running");
-            positionRunnerOnBase(currentBase);
+            print("stopping running");
+            anim.SetBool("Run", false);
+            //positionRunnerOnBase(currentBase);
             return;
         }
 
@@ -259,22 +262,19 @@ public class PlayerController : MonoBehaviour {
             ReturnToPosition();
             return;
         }
-
-
-       
             
         //Find which base to run to based on which bases have already been reached
         Vector3 basePosition;
         float step = 5f * Time.deltaTime;
         if (!firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
-            basePosition = firstBase.transform.position;
+            basePosition = GameManager.self.basePositions[0];
         else if (firstBaseVisited && !secondBaseVisited && !thirdBaseVisited)
-            basePosition = secondBase.transform.position;
+            basePosition = GameManager.self.basePositions[1];
         else if (firstBaseVisited && secondBaseVisited && !thirdBaseVisited)
-            basePosition = thirdBase.transform.position;
+            basePosition = GameManager.self.basePositions[2];
         //if all bases visited, head towards home
         else if (firstBaseVisited && secondBaseVisited && thirdBaseVisited)
-            basePosition = GameManager.self.fieldPositions.GetChild(1).transform.position;
+            basePosition = GameManager.self.basePositions[3];
         else
         {
             basePosition = Vector3.zero;
@@ -284,6 +284,9 @@ public class PlayerController : MonoBehaviour {
         //If runner is far from base
         if ((basePosition - trans.position).magnitude > radiusOfSatisfaction)
         {
+            if (!anim.GetBool("Run"))
+                anim.SetBool("Run", true);
+
             //match base y position to runners y position, stops them from running up
             basePosition = new Vector3(basePosition.x, trans.position.y, basePosition.z);
             trans.position = Vector3.MoveTowards(trans.position, basePosition, step);
@@ -294,7 +297,7 @@ public class PlayerController : MonoBehaviour {
         //Close enough to base to stop running OR go to next base
         else
         {
-            if (basePosition == firstBase.transform.position)
+            if (basePosition == GameManager.self.basePositions[0])
             {
                 firstBaseVisited = true;
                 if (!keepRunning)
@@ -302,7 +305,7 @@ public class PlayerController : MonoBehaviour {
                     arrivedAtBase = true;
                 }
             }
-            else if (basePosition == secondBase.transform.position)
+            else if (basePosition == GameManager.self.basePositions[1])
             {
                 secondBaseVisited = true;
                 if (!keepRunning)
@@ -310,7 +313,7 @@ public class PlayerController : MonoBehaviour {
                     arrivedAtBase = true;
                 }
             }
-            else if (basePosition == thirdBase.transform.position)
+            else if (basePosition == GameManager.self.basePositions[2])
             {
                 thirdBaseVisited = true;
                 if (!keepRunning)
@@ -318,7 +321,8 @@ public class PlayerController : MonoBehaviour {
                     arrivedAtBase = true;
                 }
             }
-            else if (basePosition == myTeamManager.otherTeam.playersOnTeam[1].transform.position)
+            //
+            else if (basePosition == GameManager.self.basePositions[3])
             {
                 GameManager.self.Reset();
             }
@@ -336,7 +340,7 @@ public class PlayerController : MonoBehaviour {
         if (currentPlayer == myTeamManager.playersOnTeam[2] && !runner.firstBaseVisited)
         {
             GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
-            //print(currentPlayer.name + " has ball before runner arrived");
+            print(currentPlayer.name + " has ball before runner arrived");
         }
         //first baseman, player already passed here
         else if (currentPlayer == myTeamManager.playersOnTeam[2] && runner.firstBaseVisited)
@@ -347,7 +351,7 @@ public class PlayerController : MonoBehaviour {
         else if (currentPlayer == myTeamManager.playersOnTeam[3] && !runner.secondBaseVisited)
         {
             GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
-            //print(currentPlayer.name + " has ball before runner arrived");
+            print(currentPlayer.name + " has ball before runner arrived");
         }
         //second baseman, player already passed here
         else if (currentPlayer == myTeamManager.playersOnTeam[3] && runner.secondBaseVisited)
@@ -358,13 +362,17 @@ public class PlayerController : MonoBehaviour {
         else if (currentPlayer == myTeamManager.playersOnTeam[4] && !runner.thirdBaseVisited)
         {
             GameManager.self.currentGameState = GameManager.GameStates.ResetBall;
-            GameManager.self.Reset();
-            //print(currentPlayer.name + " has ball before runner arrived");
+            //GameManager.self.Reset();
+            print(currentPlayer.name + " has ball before runner arrived");
         }
         //third baseman, player already passed here
         else if (currentPlayer == myTeamManager.playersOnTeam[4] && runner.thirdBaseVisited)
         {
             ///print(currentPlayer.name + " has ball after runner arrived");
+        }
+        else if (currentPlayer == myTeamManager.playersOnTeam[1] && !runner.reachedHome)
+        {
+
         }
         else
         {
@@ -393,8 +401,9 @@ public class PlayerController : MonoBehaviour {
         }
         
         //GameManager.self.baseball.transform.parent = throwingHand.transform;
-        GameManager.self.baseball.GetComponent<BaseballScript>().rightHand = throwingHand;
-        GameManager.self.baseball.GetComponent<BaseballScript>().BallInHand();
+        GameManager.self.ballScript.rightHand = throwingHand;
+        GameManager.self.playerWithBall = currentPlayer;
+        GameManager.self.ballScript.BallInHand();
 
         yield return new WaitForSeconds(waitTime);
         //print("wait time up, throwing");
@@ -546,9 +555,11 @@ public class PlayerController : MonoBehaviour {
         throwForceModifier = (throwForceModifier > 3) ? 3 : throwForceModifier;
 
         GameManager.self.baseball.GetComponent<BaseballScript>().ReleaseBall(throwHere, throwForceModifier);
+        GameManager.self.playerWithBall = null;
     }
 
     private bool ReturnToPosition() {
+        
         int playerIndex = System.Array.IndexOf(myTeamManager.playersOnTeam, currentPlayer);
         Transform correctPosition;
 
@@ -573,7 +584,8 @@ public class PlayerController : MonoBehaviour {
                 GameManager.self.Reset();
             return true;
         }
-            
+
+        print("Returning " + currentPlayer.name + " to their position");
         currentPlayer.transform.position = Vector3.MoveTowards(currentPlayer.transform.position, correctPosition.position, 5f * Time.deltaTime);
         anim.SetBool("Run", true);
         currentPlayer.transform.LookAt(adjustedPosition);

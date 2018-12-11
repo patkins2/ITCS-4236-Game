@@ -22,28 +22,37 @@ public class GameManager : MonoBehaviour {
     }
     #endregion
 
-    [SerializeField] private GameObject teamMngrPrefab;
-    private GameObject team1, team2;
-    [SerializeField] public Transform fieldPositions { get; private set; }
-    public Transform battingPositions { get; private set; }
-    public GameObject baseball { get; set; }
-    public GameObject bat;
-    public Vector3 initialBatRotation = new Vector3(155, -98,-88);
-    [HideInInspector] public Rigidbody batRB;
-    public BaseballScript ballScript;
-
-    public GameObject strikeZone { get; private set; }
-
-    //Increment when each team makes its last player
-    //Used to know when the game can begin
-    public int numTeamsCreated = 0;
-
     public enum GameStates
     {
         Pregame, ReadyToPitch, Pitching, BallPitched,
         ResetBall, BallInPlay
     }
     public GameStates currentGameState = GameStates.Pregame;
+
+    public enum Bases
+    {
+        First, Second, Third, Home
+    }
+
+    //Increment when each team makes its last player
+    //Used to know when the game can begin
+    public int numTeamsCreated = 0;
+
+    public Transform battingPositions { get; private set; }
+    public Transform fieldPositions { get; private set; }
+    public Vector3[] basePositions = new Vector3[4];
+    public GameObject playerWithBall;
+    public GameObject strikeZone { get; private set; }
+    public GameObject baseball { get; set; }
+    public GameObject bat;
+    public BaseballScript ballScript;
+    //public Vector3 initialBatRotation = new Vector3(155, -98,-88);
+
+    [HideInInspector] public Rigidbody batRB;
+
+    [SerializeField] private GameObject teamMngrPrefab;
+
+    private GameObject team1, team2;
 
     // Use this for initialization
     void Start () {
@@ -55,6 +64,11 @@ public class GameManager : MonoBehaviour {
         //Keeps parent Transform of all the batting and fielding positions
         battingPositions = GameObject.Find("Batting Positions").transform;
         fieldPositions = GameObject.Find("Fielding Positions").transform;
+        //first, second, third, home
+        basePositions[0] = fieldPositions.GetChild(2).position;
+        basePositions[1] = fieldPositions.GetChild(3).position;
+        basePositions[2] = fieldPositions.GetChild(4).position;
+        basePositions[3] = new Vector3(fieldPositions.GetChild(1).position.x, fieldPositions.GetChild(1).position.y, 0);
 
         strikeZone = GameObject.FindGameObjectWithTag("StrikeZone");
     }
@@ -69,11 +83,15 @@ public class GameManager : MonoBehaviour {
     }
 
     public void Reset() {
-        print("GM resetting");
-        ResetBatter();
-        ResetTeam();
-        //ResetBat();
-        StartCoroutine(ResetBall());
+        
+        if ( currentGameState == GameStates.ResetBall)
+        {
+            print("GM resetting");
+            ResetBatter();
+            ResetTeam();
+            //ResetBat();
+            StartCoroutine(ResetBall());
+        }
     }
 
     private void ResetBatter() {
@@ -99,6 +117,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    /*
     private void ResetBat() {
         GameObject batter = team1.GetComponent<TeamManager>().playersOnTeam[0];
         GameObject hand = batter.GetComponent<PlayerController>().leftHand;
@@ -119,24 +138,25 @@ public class GameManager : MonoBehaviour {
             print("bats parent: " + bat.transform.parent.gameObject.name);
         }
     }
-
+    
     private IEnumerator FixBatRotation() {
         yield return new WaitForSeconds(0.2f);
         bat.transform.rotation = Quaternion.Euler(Vector3.zero);
         bat.transform.localRotation = Quaternion.Euler(initialBatRotation);
     }
+    */
 
     private IEnumerator ResetBall() {
         if (baseball)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.4f);
             GameObject pitcher = team2.GetComponent<TeamManager>().playersOnTeam[0];
             Vector3 pitcherPos = pitcher.transform.position;
             Vector3 catcherPos = team2.GetComponent<TeamManager>().playersOnTeam[0].transform.position;
             //ball is reset by players unless hit out of bounds
-            if ((baseball.transform.position.y < 5f && !ballScript.held) ||
+            if ((baseball.transform.position.y < 5f && !ballScript.held)) //||
                 //Vector3.Distance(baseball.transform.position, pitcherPos) < 5f ||
-                Vector3.Distance(baseball.transform.position, catcherPos) > 5f)
+                //Vector3.Distance(baseball.transform.position, catcherPos) > 5f)
             {
                 Rigidbody ballRB = baseball.GetComponent<Rigidbody>();
                 ballRB.velocity = Vector3.zero;

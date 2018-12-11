@@ -586,6 +586,15 @@ Prefab:
       propertyPath: m_Name
       value: Baseball Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 20410702651167634, guid: 9c8eb7ee1a81f2f4db5101df41576725,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1279747453636072, guid: 9c8eb7ee1a81f2f4db5101df41576725, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c8eb7ee1a81f2f4db5101df41576725, type: 2}
   m_IsPrefabAsset: 0

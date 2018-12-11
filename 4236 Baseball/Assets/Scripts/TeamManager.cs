@@ -18,6 +18,10 @@ using UnityEngine;
 public class TeamManager : MonoBehaviour {
 
     public GameObject closestToBall = null;
+    [HideInInspector] public TeamManager otherTeam;
+    [HideInInspector] public enum TeamRole { FIELDING, BATTING };
+    public TeamRole role;
+    [SerializeField] public GameObject[] playersOnTeam = new GameObject[maxPlayers];
 
     //Generic player prefab for all positions other than batter and pitcher, 
     // since those are the only ones that need a gameobject attached to them (ball and bat)
@@ -27,14 +31,11 @@ public class TeamManager : MonoBehaviour {
     [SerializeField] private GameObject catcherPrefab;
     [SerializeField] private Material blueSurfaceMat;
     [SerializeField] private Material blueJointMat;
-    [SerializeField] public TeamManager otherTeam;
+    
     [SerializeField] private GameObject baseballBat;
 
     private const int maxPlayers = 9;
-    [SerializeField] public GameObject[] playersOnTeam = new GameObject[maxPlayers];
-	[HideInInspector] public enum TeamRole {FIELDING, BATTING};
-    public TeamRole role;
-
+    
     private void Awake() {
         role = TeamRole.FIELDING;
     }
